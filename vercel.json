@@ -13,7 +13,7 @@
     }
   ],
   "env": {
-    "RPC_URL": "@rpc_url",
+    "RPC_URL": "@RPC_URL",
     "PRIVATE_KEY": "@private_key",
     "CONTRACT_ADDRESS": "@contract_address"
   }
