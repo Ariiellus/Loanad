@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/**/*.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    }
+  ],
+  "env": {
+    "RPC_URL": "@rpc_url",
+    "PRIVATE_KEY": "@private_key",
+    "CONTRACT_ADDRESS": "@contract_address"
+  }
+}

@@ -99,7 +99,7 @@ const AllFormPageContent = () => {
       console.log('AllFormPage - Checking if user is already verified...');
       setMessage({ type: 'success', text: 'Verificando estado del usuario...' });
       
-      const checkResponse = await fetch('http://localhost:4000/api/check-verification', {
+      const checkResponse = await fetch('https://loanadback.vercel.app//api/check-verification', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userAddress })
@@ -130,7 +130,7 @@ const AllFormPageContent = () => {
         text: 'Procesando... El propietario está asignando 10 MON a tu cuenta...' 
       });
       
-      const initResponse = await fetch('http://localhost:4000/api/init-loan', {
+      const initResponse = await fetch('https://loanadback.vercel.app//api/init-loan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userAddress })

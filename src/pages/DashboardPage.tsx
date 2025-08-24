@@ -67,7 +67,7 @@ const DashboardPage = () => {
       console.log('DashboardPage - Fetching data for address:', userAddress);
 
       // Get verification status using getVerifiedUser(address) -> 0xd117fc99
-      const verificationResponse = await fetch('http://localhost:4000/api/check-verification', {
+      const verificationResponse = await fetch('https://loanadback.vercel.app//api/check-verification', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userAddress })
@@ -81,7 +81,7 @@ const DashboardPage = () => {
         let maxAmount = '0';
         if (verificationResult.isVerified) {
           try {
-            const maxAmountResponse = await fetch('http://localhost:4000/api/get-max-amount', {
+            const maxAmountResponse = await fetch('https://loanadback.vercel.app//api/get-max-amount', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ userAddress })
@@ -100,7 +100,7 @@ const DashboardPage = () => {
         // Get total loans using getTotalLoans() -> 0x833be5d5
         let totalLoans = '0';
         try {
-          const totalLoansResponse = await fetch('http://localhost:4000/api/get-total-loans');
+          const totalLoansResponse = await fetch('https://loanadback.vercel.app//api/get-total-loans');
           if (totalLoansResponse.ok) {
             const totalLoansResult = await totalLoansResponse.json();
             totalLoans = totalLoansResult.totalLoans || '0';
@@ -112,7 +112,7 @@ const DashboardPage = () => {
         // Get active loan IDs using getActiveLoanIds() -> 0xcb476b6b
         let activeLoanIds = [];
         try {
-          const activeLoansResponse = await fetch('http://localhost:4000/api/get-active-loan-ids');
+          const activeLoansResponse = await fetch('https://loanadback.vercel.app//api/get-active-loan-ids');
           if (activeLoansResponse.ok) {
             const activeLoansResult = await activeLoansResponse.json();
             activeLoanIds = activeLoansResult.activeLoanIds || [];
@@ -129,7 +129,7 @@ const DashboardPage = () => {
           for (const loanId of activeLoanIds) {
             try {
               // Get loan borrower using getLoanBorrower(uint256) -> 0x3ef0a2f7
-              const borrowerResponse = await fetch('http://localhost:4000/api/get-loan-borrower', {
+              const borrowerResponse = await fetch('https://loanadback.vercel.app//api/get-loan-borrower', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ loanId })
@@ -141,7 +141,7 @@ const DashboardPage = () => {
                   userLoanId = loanId;
                   
                   // Get loan collateral using getLoanCollateral(uint256) -> 0x010d5730
-                  const collateralResponse = await fetch('http://localhost:4000/api/get-loan-collateral', {
+                  const collateralResponse = await fetch('https://loanadback.vercel.app//api/get-loan-collateral', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ loanId })
@@ -154,7 +154,7 @@ const DashboardPage = () => {
                   
                   // Get user debt using s_debtorBorrowed(address) -> 0x6b9e1d93
                   try {
-                    const debtResponse = await fetch(`http://localhost:4000/api/get-user-debt/${userAddress}`);
+                    const debtResponse = await fetch(`https://loanadback.vercel.app//api/get-user-debt/${userAddress}`);
                     if (debtResponse.ok) {
                       const debtResult = await debtResponse.json();
                       userDebt = debtResult.userDebt || '0';
@@ -225,7 +225,7 @@ const DashboardPage = () => {
       // Convert MON amount to wei
       const amountInWei = (parseFloat(borrowAmount) * 1e18).toString();
       
-      const response = await fetch('http://localhost:4000/api/borrow-mon', {
+      const response = await fetch('https://loanadback.vercel.app//api/borrow-mon', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -271,7 +271,7 @@ const DashboardPage = () => {
       // Convert MON amount to wei
       const amountInWei = (parseFloat(repayAmount) * 1e18).toString();
       
-      const response = await fetch('http://localhost:4000/api/repay-mon', {
+      const response = await fetch('https://loanadback.vercel.app//api/repay-mon', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

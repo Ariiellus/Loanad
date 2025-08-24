@@ -35,7 +35,7 @@ const LandingPageContent = () => {
       console.log('LandingPage - Checking verification status for:', address);
       
       // Call backend API to check if user is already verified on-chain
-      const response = await fetch('http://localhost:4000/api/check-verification', {
+      const response = await fetch('https://loanadback.vercel.app//api/check-verification', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
