@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORS Test - LOANAD Backend</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 5px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔧 CORS Test - LOANAD Backend</h1>
+    
+    <div class="test-section">
+        <h3>Test CORS Endpoint</h3>
+        <button onclick="testCORS()">Test /api/test-cors</button>
+        <div id="cors-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Test Check Verification Endpoint</h3>
+        <input type="text" id="userAddress" placeholder="Enter user address (0x...)" style="width: 400px; padding: 8px;">
+        <button onclick="testCheckVerification()">Test /api/check-verification</button>
+        <div id="verification-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Test from Different Origin</h3>
+        <p>Open this file in a browser and test CORS from a different origin (e.g., file:// protocol)</p>
+        <button onclick="testFromDifferentOrigin()">Test from Different Origin</button>
+        <div id="origin-result"></div>
+    </div>
+
+    <script>
+        const BACKEND_URL = 'http://localhost:4000'; // Change this to your backend URL
+
+        async function testCORS() {
+            const resultDiv = document.getElementById('cors-result');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/test-cors`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div class="success">✅ Success!</div><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ Error: ${response.status}</div><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Fetch Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testCheckVerification() {
+            const userAddress = document.getElementById('userAddress').value;
+            const resultDiv = document.getElementById('verification-result');
+            
+            if (!userAddress) {
+                resultDiv.innerHTML = '<div class="error">❌ Please enter a user address</div>';
+                return;
+            }
+            
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/check-verification`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userAddress })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div class="success">✅ Success!</div><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ Error: ${response.status}</div><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ Fetch Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testFromDifferentOrigin() {
+            const resultDiv = document.getElementById('origin-result');
+            resultDiv.innerHTML = 'Testing...';
+            
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/test-cors`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `<div class="success">✅ CORS working from different origin!</div><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ CORS blocked: ${response.status}</div><pre>${JSON.stringify(data, null, 2)}</pre>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="error">❌ CORS Error: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
