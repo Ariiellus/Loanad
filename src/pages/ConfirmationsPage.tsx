@@ -1,5 +1,7 @@
+'use client';
+
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { CheckCircle, Loader2 } from 'lucide-react';
 
 interface ConfirmationItem {
@@ -10,7 +12,7 @@ interface ConfirmationItem {
 }
 
 const ConfirmationsPage = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [confirmations, setConfirmations] = useState<ConfirmationItem[]>([
     { id: 'income', label: 'Comprobante de Ingresos', isConfirmed: false, isLoading: true },
     { id: 'kyc', label: 'Verificación de Identidad', isConfirmed: false, isLoading: false },
@@ -35,12 +37,12 @@ const ConfirmationsPage = () => {
       
       // Cuando todas estén confirmadas, navegar después de un breve delay
       setTimeout(() => {
-        navigate('/dashboard');
+        router.push('/dashboard');
       }, 1000);
     };
 
     confirmSequentially();
-  }, [navigate]);
+  }, [router]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 pt-20">

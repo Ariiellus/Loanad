@@ -4,8 +4,8 @@ import { useWalletConnection, WalletConnection } from '../hooks/useWalletConnect
 interface WalletConnectionContextType {
   isConnected: boolean;
   address: string | null;
-  connectionType: 'none' | 'wallet' | 'email' | 'gmail';
-  provider: 'none' | 'metamask' | 'appkit';
+  connectionType: 'none' | 'wallet';
+  provider: 'none' | 'metamask' | 'onchainkit';
   isWalletConnected: boolean;
   walletAddress: string | null;
   refreshConnection: () => Promise<void>;

@@ -1,5 +1,7 @@
+'use client';
+
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -24,7 +26,7 @@ import {
 } from 'lucide-react';
 
 const DashboardPage = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { isConnected, address, disconnect } = useWalletConnection();
   const [contractData, setContractData] = useState({
     maxAmountForLoan: '0',
@@ -311,7 +313,7 @@ const DashboardPage = () => {
       localStorage.removeItem('loanad-loan-request');
       localStorage.removeItem('loanad-wallet-connected');
       localStorage.removeItem('loanad-wallet-address');
-      navigate('/');
+      router.push('/');
     } catch (error) {
       console.error('DashboardPage - Error during logout:', error);
       // Force navigation even if disconnect fails
@@ -319,7 +321,7 @@ const DashboardPage = () => {
       localStorage.removeItem('loanad-loan-request');
       localStorage.removeItem('loanad-wallet-connected');
       localStorage.removeItem('loanad-wallet-address');
-      navigate('/');
+      router.push('/');
     }
   };
 
@@ -361,7 +363,7 @@ const DashboardPage = () => {
             <Button onClick={fetchContractData} variant="outline" className="border-red-300">
               Reintentar
             </Button>
-            <Button onClick={() => navigate('/')} variant="outline">
+            <Button onClick={() => router.push('/')} variant="outline">
               Ir al Inicio
             </Button>
           </div>
@@ -378,7 +380,7 @@ const DashboardPage = () => {
           <Wallet className="h-16 w-16 text-gray-400 mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-gray-800 mb-2">No hay Wallet Conectada</h2>
           <p className="text-gray-600 mb-6">Conecta tu wallet para ver tu dashboard</p>
-          <Button onClick={() => navigate('/')} variant="outline" className="border-gray-300">
+          <Button onClick={() => router.push('/')} variant="outline" className="border-gray-300">
             Ir al Inicio
           </Button>
         </div>
@@ -668,7 +670,7 @@ const DashboardPage = () => {
                 </div>
                 <p className="text-gray-600 mb-4">No tienes préstamos activos</p>
                 <Button 
-                  onClick={() => navigate('/loan-form')}
+                  onClick={() => router.push('/loan-form')}
                   className="bg-monad-purple hover:bg-monad-purple/90"
                 >
                   Solicitar Préstamo
@@ -683,14 +685,14 @@ const DashboardPage = () => {
           <h3 className="text-lg font-montserrat font-bold text-gray-800 mb-4">Acciones Rápidas</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Button 
-              onClick={() => navigate('/loan-form')}
+              onClick={() => router.push('/loan-form')}
               className="w-full bg-monad-purple hover:bg-monad-purple/90 text-white py-3"
             >
               <CreditCard className="h-4 w-4 mr-2" />
               Solicitar Préstamo
             </Button>
             <Button 
-              onClick={() => navigate('/borrowers-list')}
+              onClick={() => router.push('/borrowers-list')}
               variant="outline"
               className="w-full border-gray-300 hover:border-monad-purple py-3"
             >

@@ -1,12 +1,14 @@
+'use client';
+
 import { ArrowRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { AppKitProvider } from '@/components/ReownButtonProvider';
+import { WalletConnection } from '@/components/WalletConnection';
 import { useWalletConnection } from '@/hooks/useWalletConnection';
 import { useEffect } from 'react';
 
 const LandingPageContent = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { 
     isConnected, 
     address, 
@@ -55,17 +57,17 @@ const LandingPageContent = () => {
       if (result.isVerified) {
         console.log('LandingPage - User already verified on-chain, going to dashboard');
         // User is already verified on-chain, go directly to dashboard
-        navigate('/dashboard');
+        router.push('/dashboard');
         return;
       } else {
         console.log('LandingPage - User not verified on-chain, going to verification page');
         // User is not verified, go to verification page
-        navigate('/verification');
+                router.push('/verification');
       }
     } catch (error) {
       console.error('LandingPage - Error checking verification:', error);
       // On error, fallback to verification page
-      navigate('/verification');
+                router.push('/verification');
     }
   };
 
@@ -111,9 +113,7 @@ const LandingPageContent = () => {
               </>
             )}
             <div className="flex justify-center">
-              <AppKitProvider>
-                  <appkit-button label="Iniciar Sesión" />
-              </AppKitProvider>
+              <WalletConnection />
             </div>
           </div>
         </div>

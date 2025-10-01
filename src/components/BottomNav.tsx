@@ -1,9 +1,11 @@
+'use client';
+
 import { Home, TrendingUp, HandCoins } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useRouter, usePathname } from 'next/navigation';
 
 const BottomNav = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
+  const pathname = usePathname();
   
   // Hide on public routes and user flow pages
   const hideBottomNavRoutes = [
@@ -13,17 +15,17 @@ const BottomNav = () => {
     '/confirmations' // Confirmations
   ];
   
-  if (hideBottomNavRoutes.includes(location.pathname)) {
+  if (pathname && hideBottomNavRoutes.includes(pathname)) {
     return null;
   }
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => pathname === path;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-background border-t border-border z-50">
       <div className="max-w-md mx-auto flex justify-around items-center py-3">
         <button 
-          onClick={() => navigate('/borrowers-list')}
+          onClick={() => router.push('/borrowers-list')}
           className={`flex flex-col items-center gap-1 px-4 py-2 transition-colors ${
             isActive('/borrowers-list') 
               ? 'text-monad-purple' 
@@ -35,7 +37,7 @@ const BottomNav = () => {
         </button>
         
         <button 
-          onClick={() => navigate('/dashboard')}
+          onClick={() => router.push('/dashboard')}
           className={`flex flex-col items-center gap-1 px-4 py-2 transition-colors ${
             isActive('/dashboard') 
               ? 'text-monad-purple' 
@@ -47,7 +49,7 @@ const BottomNav = () => {
         </button>
         
         <button 
-          onClick={() => navigate('/loan-form')}
+          onClick={() => router.push('/loan-form')}
           className={`flex flex-col items-center gap-1 px-4 py-2 transition-colors ${
             isActive('/loan-form') 
               ? 'text-monad-purple' 

@@ -1,14 +1,16 @@
+'use client';
+
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { Paperclip, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { AppKitProvider } from '@/components/ReownButtonProvider';
+import { Providers } from '@/components/Providers';
 import { useWalletConnection } from '@/hooks/useWalletConnection';
-import WalletConnectionStatus from '@/components/WalletConnectionStatus';
+import { WalletConnection } from '@/components/WalletConnection';
 
 const AllFormPageContent = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { isConnected, address, connectionType, provider } = useWalletConnection();
   const [documentUploaded, setDocumentUploaded] = useState(false);
   const [kycCompleted, setKycCompleted] = useState(false);
@@ -59,7 +61,7 @@ const AllFormPageContent = () => {
     };
 
     checkVerificationStatus();
-  }, [navigate, isConnected, address]);
+  }, [router, isConnected, address]);
 
   const handleDocumentUpload = () => {
     setDocumentUploaded(true);
@@ -117,7 +119,7 @@ const AllFormPageContent = () => {
           });
           
           setTimeout(() => {
-            navigate('/dashboard');
+            router.push('/dashboard');
           }, 2000);
           return;
         }
@@ -162,7 +164,7 @@ const AllFormPageContent = () => {
 
         // Navigate to dashboard after a delay
         setTimeout(() => {
-          navigate('/dashboard');
+          router.push('/dashboard');
         }, 3000);
       } else {
         throw new Error(initResult.error || 'Error en la verificación y asignación');
@@ -206,7 +208,7 @@ const AllFormPageContent = () => {
           </div>
           
           {/* Wallet Connection Status */}
-          <WalletConnectionStatus />
+          <WalletConnection />
           
           {message && (
             <div className={`p-4 rounded-lg text-sm font-medium ${

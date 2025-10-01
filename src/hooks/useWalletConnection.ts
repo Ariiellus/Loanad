@@ -4,8 +4,8 @@ import { useAccount, useDisconnect } from 'wagmi';
 export interface WalletConnection {
   isConnected: boolean;
   address: string | null;
-  connectionType: 'none' | 'wallet' | 'email' | 'gmail';
-  provider: 'none' | 'metamask' | 'appkit';
+  connectionType: 'none' | 'wallet';
+  provider: 'none' | 'metamask' | 'onchainkit';
 }
 
 export const useWalletConnection = () => {
@@ -22,18 +22,15 @@ export const useWalletConnection = () => {
   const updateConnectionState = () => {
     if (isConnected && address) {
       // Determine connection type based on connector
-      let connectionType: 'wallet' | 'email' | 'gmail' = 'wallet';
-      let provider: 'metamask' | 'appkit' = 'metamask';
+      let connectionType: 'wallet' = 'wallet';
+      let provider: 'onchainkit' | 'metamask' = 'onchainkit';
 
       if (connector) {
         const connectorName = connector.name.toLowerCase();
-        if (connectorName.includes('appkit') || connectorName.includes('reown')) {
-          provider = 'appkit';
-          // AppKit primarily handles email connections
-          connectionType = 'email';
+        if (connectorName.includes('onchainkit') || connectorName.includes('coinbase')) {
+          provider = 'onchainkit';
         } else if (connectorName.includes('metamask') || connectorName.includes('injected')) {
           provider = 'metamask';
-          connectionType = 'wallet';
         }
       }
 
@@ -69,17 +66,11 @@ export const useWalletConnection = () => {
       return {
         status: 'disconnected',
         message: 'No wallet connected',
-        action: 'Connect your wallet or email'
+        action: 'Connect your wallet'
       };
     }
 
     switch (walletConnection.connectionType) {
-      case 'email':
-        return {
-          status: 'connected',
-          message: `Connected via email: ${walletConnection.address?.slice(0, 6)}...${walletConnection.address?.slice(-4)}`,
-          action: 'Ready to verify'
-        };
       case 'wallet':
         return {
           status: 'connected',

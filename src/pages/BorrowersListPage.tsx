@@ -1,5 +1,7 @@
+'use client';
+
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { CheckCircle, TrendingUp, ArrowLeft, RefreshCw, AlertCircle } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -35,7 +37,7 @@ const BorrowerCard = ({
   inputAmount: string;
   onInputChange: (value: string) => void;
 }) => {
-  const navigate = useNavigate();
+  const router = useRouter();
   
   // Convert wei to MON for display
   const amountInMON = parseFloat(loanData.amount) / 1e18;
@@ -188,7 +190,7 @@ const BorrowerCard = ({
           
           {/* View Details Button */}
           <Button 
-            onClick={() => navigate('/borrower-detail', { state: { loanData } })}
+            onClick={() => router.push('/borrower-detail')}
             variant="outline"
             className="w-full border-monad-purple/30 text-monad-purple hover:bg-monad-purple/10 font-montserrat font-medium py-2 rounded-lg transition-all duration-300 text-sm"
           >
@@ -202,7 +204,7 @@ const BorrowerCard = ({
 };
 
 const BorrowersListPage = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { isConnected } = useWalletConnection();
   const [loans, setLoans] = useState<LoanData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -411,7 +413,7 @@ const BorrowersListPage = () => {
         <div className="max-w-md mx-auto">
           <div className="flex items-center mb-6">
             <button 
-              onClick={() => navigate('/dashboard')}
+              onClick={() => router.push('/dashboard')}
               className="p-2 hover:bg-muted rounded-lg transition-colors mr-3 shrink-0"
             >
               <ArrowLeft size={24} className="text-foreground" />
@@ -441,7 +443,7 @@ const BorrowersListPage = () => {
         <div className="max-w-md mx-auto">
           <div className="flex items-center mb-6">
             <button 
-              onClick={() => navigate('/dashboard')}
+              onClick={() => router.push('/dashboard')}
               className="p-2 hover:bg-muted rounded-lg transition-colors mr-3 shrink-0"
             >
               <ArrowLeft size={24} className="text-foreground" />
@@ -476,7 +478,7 @@ const BorrowersListPage = () => {
         <div className="max-w-md mx-auto">
           <div className="flex items-center mb-6">
             <button 
-              onClick={() => navigate('/dashboard')}
+              onClick={() => router.push('/dashboard')}
               className="p-2 hover:bg-muted rounded-lg transition-colors mr-3 shrink-0"
             >
               <ArrowLeft size={24} className="text-foreground" />
@@ -514,7 +516,7 @@ const BorrowersListPage = () => {
         <div className="mb-6">
           <div className="flex items-center mb-4">
             <button 
-              onClick={() => navigate('/dashboard')}
+              onClick={() => router.push('/dashboard')}
               className="p-2 hover:bg-muted rounded-lg transition-colors mr-3 shrink-0"
             >
               <ArrowLeft size={24} className="text-foreground" />

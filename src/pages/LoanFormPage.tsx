@@ -1,5 +1,7 @@
+'use client';
+
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { ArrowRight, ArrowLeft, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,7 +21,7 @@ import { monadTestnet } from 'wagmi/chains';
  */
 
 const LoanFormPage = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { isConnected, address } = useWalletConnection();
   const [interestRate, setInterestRate] = useState([15]);
   const [loanAmount, setLoanAmount] = useState('10000000000000000000'); // 10 MON in wei
@@ -99,7 +101,7 @@ const LoanFormPage = () => {
     
     // Navigate to confirmations page
     setTimeout(() => {
-      navigate('/confirmations');
+      router.push('/confirmations');
     }, 2000);
   }
 
@@ -126,7 +128,7 @@ const LoanFormPage = () => {
     <div className="min-h-screen bg-background px-4 pt-8 pb-24">
       <div className="max-w-md mx-auto">
         <button 
-          onClick={() => navigate('/dashboard')}
+          onClick={() => router.push('/dashboard')}
           className="mb-4 p-2 hover:bg-muted rounded-lg transition-colors"
         >
           <ArrowLeft size={24} className="text-foreground" />
