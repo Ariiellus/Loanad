@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import { useWalletConnection } from '@/hooks/useWalletConnection';
-import { useLoanadContract, formatMON } from '@/hooks/useContract';
+import { useLoanadContract, format } from '@/hooks/useContract';
 import { Address } from 'viem';
 
 interface LoanData {
@@ -215,7 +215,7 @@ const LoanCard = ({
 
   if (!borrower) return null;
 
-  const collateralAmount = collateral ? formatMON(collateral) : '0';
+  const collateralAmount = collateral ? format(collateral) : '0';
   const fundingPercentage = collateral ? Math.min(100, parseFloat(collateralAmount) * 10) : 0;
 
   // Generate avatar based on address

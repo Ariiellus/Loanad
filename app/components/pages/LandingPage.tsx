@@ -55,7 +55,7 @@ const LandingPageContent = () => {
         <div className="text-center max-w-md w-full space-y-8">
           <div className="space-y-4">
             <img 
-              src="/loanad-logo.png" 
+              src="/Loanad-Logo.png" 
               alt="LOANAD Logo" 
               className="w-24 h-24 mx-auto mb-2"
             />

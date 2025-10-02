@@ -16,6 +16,10 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: 'Loanad - Decentralized lending platform',
   description: 'Decentralized lending platform',
+  icons: {
+    icon: '/Loanad-Logo.png',
+    apple: '/Loanad-Logo.png',
+  },
 }
 
 export default function RootLayout({

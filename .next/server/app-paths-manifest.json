@@ -1,3 +1,4 @@
 {
-  "/pages/verification/page": "app/pages/verification/page.js"
+  "/pages/verification/page": "app/pages/verification/page.js",
+  "/page": "app/page.js"
 }

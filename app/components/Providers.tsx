@@ -43,7 +43,7 @@ export function Providers({ children }: { children: ReactNode }) {
               paymaster: process.env.NEXT_PUBLIC_PAYMASTER_AND_BUNDLER_ENDPOINT,
               appearance: {
                 name: "Loanad",
-                logo: "/loanad-logo.png",
+                logo: "/Loanad-Logo.png",
                 mode: "auto",
                 theme: "default",
               },

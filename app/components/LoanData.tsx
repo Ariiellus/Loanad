@@ -1,7 +1,7 @@
 "use client";
 
 import { useAccount } from "wagmi";
-import { useLoanadContract, formatMON } from "@/hooks/useContract";
+import { useLoanadContract, format } from "@/hooks/useContract";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
@@ -55,7 +55,7 @@ export function LoanData() {
             {maxLoanLoading
               ? "Loading..."
               : maxLoanAmount
-              ? `${formatMON(maxLoanAmount)} MON`
+              ? `${format(maxLoanAmount)} MON`
               : "0 MON"}
           </p>
           <p>
@@ -63,7 +63,7 @@ export function LoanData() {
             {debtLoading
               ? "Loading..."
               : userDebt
-              ? `${formatMON(userDebt)} MON`
+              ? `${format(userDebt)} MON`
               : "0 MON"}
           </p>
         </div>
