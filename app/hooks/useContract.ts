@@ -182,6 +182,40 @@ export function useLoanadContract() {
 }
 
 // Helper functions
-export const formatMON = (wei: bigint) => formatEther(wei);
+export const format = (wei: bigint) => formatEther(wei);
 export const parseMON = (amount: string) => parseEther(amount);
+
+// Helper to create contract call parameters for OnchainKit Transaction component
+export const createContractCall = (
+  functionName: string,
+  args: any[] = [],
+  value?: bigint
+) => {
+  return {
+    address: CONTRACT_ADDRESS as Address,
+    abi: CONTRACT_ABI,
+    functionName,
+    args,
+    ...(value && { value }),
+  };
+};
+
+// Contract call builders for OnchainKit Transaction component
+export const buildBorrowCall = (amount: string) => 
+  createContractCall('borrow', [parseEther(amount)]);
+
+export const buildRepayLoanCall = (amount: string) => 
+  createContractCall('repayLoan', [], parseEther(amount));
+
+export const buildAddCollateralCall = (loanId: number, amount: string) => 
+  createContractCall('addCollateral', [BigInt(loanId)], parseEther(amount));
+
+export const buildWithdrawCollateralCall = (loanId: number, amount: string) => 
+  createContractCall('withdrawCollateral', [BigInt(loanId), parseEther(amount)]);
+
+export const buildCreateLoanRequestCall = (amount: string) => 
+  createContractCall('createLoanRequest', [parseEther(amount)]);
+
+export const buildAssignMaxLoanCall = (userAddress: Address) => 
+  createContractCall('assignMaximumAmountForLoan', [userAddress]);
 

@@ -30,7 +30,7 @@ const config = createConfig({
 const queryClient = new QueryClient();
 
 export function Providers({ children }: { children: ReactNode }) {
-  const apiKey = process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY;
+  const apiKey = process.env.NEXT_PUBLIC_CDP_API_KEY || process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY;
 
   return (
     <WagmiProvider config={config}>
@@ -40,6 +40,7 @@ export function Providers({ children }: { children: ReactNode }) {
             apiKey={apiKey}
             chain={baseSepolia}
             config={{
+              paymaster: process.env.NEXT_PUBLIC_PAYMASTER_AND_BUNDLER_ENDPOINT,
               appearance: {
                 name: "Loanad",
                 logo: "/loanad-logo.png",

@@ -5,8 +5,8 @@ addCollateralForCrowfundedLoan(uint256) -> 0x5886cb68
 withdrawForCrowfundedLoan(uint256,uint256) -> 0x1e7b5766
 calculateCollateralValue(address) -> 0x0835e145
 isLiquidatable(address) -> 0x042e02cf
-borrow(uint256) -> 0x2645b1db
-repay() -> 0x3d263c33
+borrow(uint256) -> 0xc5ebeaec
+repay() -> 0x402d8883
 assignMaximumAmountForLoan(address) -> 0x753008b1
 verifyUser(address) -> 0x4d813120
 checkLoanActive(uint256) -> 0xe8627e24
