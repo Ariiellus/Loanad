@@ -33,7 +33,7 @@ const BottomNav = () => {
           }`}
         >
           <TrendingUp size={24} />
-          <span className="text-xs font-montserrat font-bold">Invertir</span>
+          <span className="text-xs font-montserrat font-bold">Invest</span>
         </button>
         
         <button 
@@ -45,7 +45,7 @@ const BottomNav = () => {
           }`}
         >
           <Home size={28} />
-          <span className="text-xs font-montserrat font-bold">Inicio</span>
+          <span className="text-xs font-montserrat font-bold">Home</span>
         </button>
         
         <button 
@@ -57,7 +57,7 @@ const BottomNav = () => {
           }`}
         >
           <HandCoins size={24} />
-          <span className="text-xs font-montserrat font-bold">Préstamo</span>
+          <span className="text-xs font-montserrat font-bold">Borrow</span>
         </button>
       </div>
     </div>

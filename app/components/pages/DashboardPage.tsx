@@ -210,12 +210,12 @@ const DashboardPage = () => {
   // Handle borrow MON
   const handleBorrow = async () => {
     if (!borrowAmount || parseFloat(borrowAmount) <= 0) {
-      alert('Por favor ingresa una cantidad válida para pedir prestado');
+      alert('Please enter a valid amount to borrow');
       return;
     }
 
     const confirmBorrow = window.confirm(
-      `¿Estás seguro de que quieres pedir prestado ${borrowAmount} MON?\n\nEsta acción aumentará tu deuda.`
+      `Are you sure you want to borrow ${borrowAmount} MON?\n\nThis action will increase your debt.`
     );
 
     if (!confirmBorrow) {
@@ -237,17 +237,17 @@ const DashboardPage = () => {
 
       if (response.ok) {
         const result = await response.json();
-        alert(`✅ MON pedido prestado exitosamente!\n\nHash de transacción: ${result.txHash}\n\nTu deuda ha sido aumentada.`);
+        alert(`✅ MON borrowed successfully!\n\nTransaction hash: ${result.txHash}\n\nYour debt has been increased.`);
               // Clear input and refresh data after successful borrow
       setBorrowAmount('');
         await fetchContractData();
       } else {
         const error = await response.json();
-        alert(`❌ Error al pedir prestado: ${error.error}`);
+        alert(`❌ Error borrowing: ${error.error}`);
       }
     } catch (error) {
       console.error('Error borrowing MON:', error);
-      alert('❌ Error al pedir prestado. Por favor, intenta de nuevo.');
+      alert('❌ Error borrowing. Please try again.');
     } finally {
       setIsWithdrawing(false);
     }
@@ -256,12 +256,12 @@ const DashboardPage = () => {
   // Handle repay MON
   const handleRepay = async () => {
     if (!repayAmount || parseFloat(repayAmount) <= 0) {
-      alert('Por favor ingresa una cantidad válida para pagar');
+      alert('Please enter a valid amount to pay');
       return;
     }
 
     const confirmRepay = window.confirm(
-      `¿Estás seguro de que quieres pagar ${repayAmount} MON?\n\nEsta acción reducirá tu deuda pendiente.`
+      `Are you sure you want to pay ${repayAmount} MON?\n\nThis action will reduce your outstanding debt.`
     );
 
     if (!confirmRepay) {
@@ -284,17 +284,17 @@ const DashboardPage = () => {
 
       if (response.ok) {
         const result = await response.json();
-        alert(`✅ MON pagado exitosamente!\n\nHash de transacción: ${result.txHash}\n\nTu deuda ha sido reducida.`);
+        alert(`✅ MON paid successfully!\n\nTransaction hash: ${result.txHash}\n\nYour debt has been reduced.`);
         // Clear input and refresh data after successful repayment
         setRepayAmount('');
         await fetchContractData();
       } else {
         const error = await response.json();
-        alert(`❌ Error al pagar MON: ${error.error}`);
+        alert(`❌ Error paying MON: ${error.error}`);
       }
     } catch (error) {
       console.error('Error repaying MON:', error);
-      alert('❌ Error al pagar MON. Por favor, intenta de nuevo.');
+      alert('❌ Error paying MON. Please try again.');
     } finally {
       setIsRepaying(false);
     }
@@ -342,9 +342,9 @@ const DashboardPage = () => {
             <Loader2 className="h-16 w-16 animate-spin text-monad-purple mx-auto mb-6" />
             <div className="absolute inset-0 rounded-full border-4 border-monad-purple/20"></div>
           </div>
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">Cargando Dashboard</h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">Loading Dashboard</h2>
           <p className="text-gray-600">
-            Estado: {isConnected ? 'Conectado' : 'No conectado'}
+            Status: {isConnected ? 'Connected' : 'Not connected'}
           </p>
         </div>
       </div>
@@ -361,10 +361,10 @@ const DashboardPage = () => {
           <p className="text-red-600 mb-6">{error}</p>
           <div className="space-x-3">
             <Button onClick={fetchContractData} variant="outline" className="border-red-300">
-              Reintentar
+              Retry
             </Button>
             <Button onClick={() => router.push('/')} variant="outline">
-              Ir al Inicio
+              Go Home
             </Button>
           </div>
         </div>
@@ -378,10 +378,10 @@ const DashboardPage = () => {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-slate-100 flex items-center justify-center">
         <div className="text-center max-w-md mx-auto p-6">
           <Wallet className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">No hay Wallet Conectada</h2>
-          <p className="text-gray-600 mb-6">Conecta tu wallet para ver tu dashboard</p>
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">You need to login to see your dashboard</h2>
+          <p className="text-gray-600 mb-6">Login to see your dashboard</p>
           <Button onClick={() => router.push('/')} variant="outline" className="border-gray-300">
-            Ir al Inicio
+            Go Home
           </Button>
         </div>
       </div>
@@ -403,7 +403,7 @@ const DashboardPage = () => {
               <h1 className="text-4xl font-montserrat font-bold bg-gradient-to-r from-monad-purple to-purple-600 bg-clip-text text-transparent">
                 Dashboard
               </h1>
-              <p className="text-gray-600 text-sm">Tu resumen financiero en tiempo real</p>
+              <p className="text-gray-600 text-sm">Your financial summary in real time</p>
             </div>
           </div>
           <div className="flex items-center space-x-3">
@@ -415,7 +415,7 @@ const DashboardPage = () => {
               className="border-gray-300 hover:border-monad-purple"
             >
               <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-              Actualizar
+              Update
             </Button>
             <Button 
               onClick={handleLogout}
@@ -453,17 +453,17 @@ const DashboardPage = () => {
                 <Shield className="h-5 w-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-600 font-medium">Estado</p>
+                <p className="text-sm text-gray-600 font-medium">Status</p>
                 <div className="flex items-center space-x-2">
                   {contractData.isVerified ? (
                     <>
                       <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span className="text-sm font-medium text-green-700">Verificado</span>
+                      <span className="text-sm font-medium text-green-700">Verified</span>
                     </>
                   ) : (
                     <>
                       <Clock className="h-4 w-4 text-yellow-500" />
-                      <span className="text-sm font-medium text-yellow-700">Pendiente</span>
+                      <span className="text-sm font-medium text-yellow-700">Pending</span>
                     </>
                   )}
                 </div>
@@ -478,7 +478,7 @@ const DashboardPage = () => {
                 <Users className="h-5 w-5 text-purple-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-600 font-medium">Total Préstamos</p>
+                <p className="text-sm text-gray-600 font-medium">Total Loans</p>
                 <p className="text-lg font-bold text-purple-700">
                   {parseInt(contractData.totalLoans) || 0}
                 </p>
@@ -493,7 +493,7 @@ const DashboardPage = () => {
                 <CreditCard className="h-5 w-5 text-orange-600" />
               </div>
               <div>
-                <p className="text-sm text-gray-600 font-medium">Préstamos Activos</p>
+                <p className="text-sm text-gray-600 font-medium">Active Loans</p>
                 <p className="text-lg font-bold text-orange-700">
                   {contractData.activeLoanIds.length || 0}
                 </p>
@@ -512,9 +512,9 @@ const DashboardPage = () => {
               </div>
               <div>
                 <h2 className="text-xl font-montserrat font-bold text-gray-800">
-                  Resumen de Deuda
+                  Debt Summary
                 </h2>
-                <p className="text-sm text-gray-600">Tu estado financiero actual</p>
+                <p className="text-sm text-gray-600">Your current financial status</p>
               </div>
             </div>
             
@@ -524,7 +524,7 @@ const DashboardPage = () => {
                   <div className="p-2 bg-green-100 rounded-lg">
                     <DollarSign className="h-5 w-5 text-green-600" />
                   </div>
-                  <span className="text-gray-700 font-medium">Monto Total</span>
+                  <span className="text-gray-700 font-medium">Total Amount</span>
                 </div>
                 <span className="text-xl font-bold text-green-700">{debtData.total.toFixed(2)} MON</span>
               </div>
@@ -534,7 +534,7 @@ const DashboardPage = () => {
                   <div className="p-2 bg-blue-100 rounded-lg">
                     <TrendingUp className="h-5 w-5 text-blue-600" />
                   </div>
-                  <span className="text-gray-700 font-medium">Monto Financiado</span>
+                  <span className="text-gray-700 font-medium">Funded Amount</span>
                 </div>
                 <span className="text-xl font-bold text-blue-700">{debtData.paid.toFixed(2)} MON</span>
               </div>
@@ -544,7 +544,7 @@ const DashboardPage = () => {
                   <div className="p-2 bg-red-100 rounded-lg">
                     <TrendingDown className="h-5 w-5 text-red-600" />
                   </div>
-                  <span className="text-gray-700 font-medium">Deuda Pendiente</span>
+                  <span className="text-gray-700 font-medium">Outstanding Debt</span>
                 </div>
                 <span className="text-xl font-bold text-red-700">
                   {(parseFloat(contractData.userDebt) / 1e18).toFixed(4)} MON
@@ -561,9 +561,9 @@ const DashboardPage = () => {
               </div>
               <div>
                 <h2 className="text-xl font-montserrat font-bold text-gray-800">
-                  Detalles del Préstamo
+                  Loan Details
                 </h2>
-                <p className="text-sm text-gray-600">Información de tu préstamo activo</p>
+                <p className="text-sm text-gray-600">Your active loan information</p>
               </div>
               
             </div>
@@ -572,11 +572,11 @@ const DashboardPage = () => {
               <div className="space-y-4">
                 <div className="p-4 bg-gradient-to-r from-purple-50 to-violet-50 rounded-xl border border-purple-100">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium text-gray-700">ID del Préstamo</span>
+                    <span className="text-sm font-medium text-gray-700">Loan ID</span>
                     <span className="text-sm font-mono text-purple-600">#{contractData.userLoanId}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-700">Colateral</span>
+                    <span className="text-sm font-medium text-gray-700">Collateral</span>
                     <span className="text-lg font-bold text-purple-700">
                       {(parseFloat(contractData.userLoanCollateral) / 1e18).toFixed(2)} MON
                     </span>
@@ -586,19 +586,19 @@ const DashboardPage = () => {
                 <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-100">
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-700">Estado</span>
+                      <span className="text-sm font-medium text-gray-700">Status</span>
                       <div className="flex items-center space-x-2">
                         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                        <span className="text-sm font-medium text-green-700">Activo</span>
+                        <span className="text-sm font-medium text-green-700">Active</span>
                       </div>
                     </div>
                     
                     {/* Action Buttons with Inputs */}
                     <div className="space-y-3 pt-3 border-t border-green-200">
-                      {/* Retirar Colateral Section */}
+                      {/* Withdraw Collateral Section */}
                       <div className="space-y-2">
                         <label className="block text-xs font-medium text-gray-700">
-                          Cantidad a Pedir Prestado (MON)
+                          Amount to Borrow (MON)
                         </label>
                         <div className="flex space-x-2">
                           <Input
@@ -622,15 +622,15 @@ const DashboardPage = () => {
                             ) : (
                               <ArrowUpCircle className="h-3 w-3 mr-2" />
                             )}
-                            {isWithdrawing ? 'Pidiendo...' : 'Pedir Prestado'}
+                            {isWithdrawing ? 'Borrowing...' : 'Borrow'}
                           </Button>
                         </div>
                       </div>
 
-                      {/* Pagar MON Section */}
+                      {/* Pay MON Section */}
                       <div className="space-y-2">
                         <label className="block text-xs font-medium text-gray-700">
-                          Cantidad a Pagar (MON)
+                          Amount to Pay (MON)
                         </label>
                         <div className="flex space-x-2">
                           <Input
@@ -654,7 +654,7 @@ const DashboardPage = () => {
                             ) : (
                               <ArrowDownCircle className="h-3 w-3 mr-2" />
                             )}
-                            {isRepaying ? 'Pagando...' : 'Pagar'}
+                            {isRepaying ? 'Paying...' : 'Pay'}
                           </Button>
                         </div>
                       </div>
@@ -668,12 +668,12 @@ const DashboardPage = () => {
                 <div className="p-4 bg-gray-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                   <CreditCard className="h-8 w-8 text-gray-400" />
                 </div>
-                <p className="text-gray-600 mb-4">No tienes préstamos activos</p>
+                <p className="text-gray-600 mb-4">You have no active loans</p>
                 <Button 
                   onClick={() => router.push('/pages/loan-form')}
                   className="bg-monad-purple hover:bg-monad-purple/90"
                 >
-                  Solicitar Préstamo
+                  Request Loan
                 </Button>
               </div>
             )}
@@ -689,7 +689,7 @@ const DashboardPage = () => {
               className="w-full bg-monad-purple hover:bg-monad-purple/90 text-white py-3"
             >
               <CreditCard className="h-4 w-4 mr-2" />
-              Solicitar Préstamo
+              Request Loan
             </Button>
             <Button 
               onClick={() => router.push('/pages/borrowers-list')}
@@ -697,7 +697,7 @@ const DashboardPage = () => {
               className="w-full border-gray-300 hover:border-monad-purple py-3"
             >
               <Users className="h-4 w-4 mr-2" />
-              Ver Préstamos
+              View Loans
             </Button>
             <Button 
               onClick={handleRefresh}
@@ -705,7 +705,7 @@ const DashboardPage = () => {
               className="w-full border-gray-300 hover:border-monad-purple py-3"
             >
               <RefreshCw className="h-4 w-4 mr-2" />
-              Actualizar Datos
+              Update Datos
             </Button>
 
           </div>

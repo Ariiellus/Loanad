@@ -25,7 +25,7 @@ const LoanFormPage = () => {
   const { isConnected, address } = useWalletConnection();
   const [interestRate, setInterestRate] = useState([15]);
   const [loanAmount, setLoanAmount] = useState('10000000000000000000'); // 10 MON in wei
-  const [loanPurpose, setLoanPurpose] = useState('Emprender un negocio');
+  const [loanPurpose, setLoanPurpose] = useState('Start a business');
   const [additionalDetails, setAdditionalDetails] = useState('');
   const [monthlyIncome, setMonthlyIncome] = useState('5000');
   const [monthlyExpenses, setMonthlyExpenses] = useState('3000');
@@ -38,7 +38,7 @@ const LoanFormPage = () => {
 
   const handleContinue = async () => {
     if (!isConnected || !address) {
-      setMessage({ type: 'error', text: 'No hay wallet conectada' });
+      setMessage({ type: 'error', text: 'You need to log in to continue' });
       return;
     }
 
@@ -71,14 +71,14 @@ const LoanFormPage = () => {
 
       setMessage({ 
         type: 'success', 
-        text: 'Transacción enviada. Esperando confirmación...' 
+        text: 'Transaction sent. Waiting for confirmation...' 
       });
 
     } catch (error) {
       console.error('Error creating loan request:', error);
       setMessage({ 
         type: 'error', 
-        text: `Error al crear solicitud: ${error instanceof Error ? error.message : 'Error desconocido'}` 
+        text: `Error creating loan request: ${error instanceof Error ? error.message : 'Unknown error'}` 
       });
       setIsSubmitting(false);
     }
@@ -112,7 +112,7 @@ const LoanFormPage = () => {
         <div className="text-center">
           <Loader2 className="h-12 w-12 animate-spin text-monad-purple mx-auto mb-4" />
           <p className="text-muted-foreground">
-            {isPending ? 'Enviando transacción...' : 'Esperando confirmación...'}
+            {isPending ? 'Sending loan request...' : 'Waiting for confirmation...'}
           </p>
           {hash && (
             <p className="text-xs text-muted-foreground mt-2">
@@ -136,7 +136,7 @@ const LoanFormPage = () => {
         
         <Card className="p-6 space-y-6 bg-card rounded-xl shadow-sm">
           <h2 className="text-2xl font-montserrat font-bold text-foreground text-center">
-            Solicitud de Préstamo
+            Loan Request
           </h2>
           
           {/* Message Display */}
@@ -153,7 +153,7 @@ const LoanFormPage = () => {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                ¿Cuánto dinero necesitas?
+                How much money do you need?
               </label>
               <Input 
                 type="number" 
@@ -164,18 +164,18 @@ const LoanFormPage = () => {
                 disabled={isSubmitting}
               />
               <p className="text-xs text-muted-foreground mt-1">
-                Monto en MON (máximo 10 ETH)
+                Amount in MON (maximum 10 ETH)
               </p>
             </div>
 
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                ¿Para qué lo necesitas?
+                For what do you need it?
               </label>
               <Input 
                 value={loanPurpose}
                 onChange={(e) => setLoanPurpose(e.target.value)}
-                placeholder="Emprender un negocio"
+                placeholder="Start a business"
                 className="rounded-lg"
                 disabled={isSubmitting}
               />
@@ -183,12 +183,12 @@ const LoanFormPage = () => {
 
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                Detalles adicionales
+                Additional details
               </label>
               <Textarea 
                 value={additionalDetails}
                 onChange={(e) => setAdditionalDetails(e.target.value)}
-                placeholder="Cuéntanos más sobre tu proyecto..."
+                placeholder="Tell us more about your project..."
                 className="rounded-lg h-20"
                 disabled={isSubmitting}
               />
@@ -206,11 +206,11 @@ const LoanFormPage = () => {
               {isSubmitting ? (
                 <>
                   <Loader2 className="animate-spin mr-2" size={20} />
-                  Procesando...
+                  Processing...
                 </>
               ) : (
                 <>
-                  Continuar
+                  Continue
                   <ArrowRight className="ml-2" size={20} />
                 </>
               )}

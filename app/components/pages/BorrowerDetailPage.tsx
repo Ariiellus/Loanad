@@ -65,16 +65,16 @@ const BorrowerDetailPage = () => {
                 {data.name}
               </h2>
               <p className="text-muted-foreground">
-                {data.age} años
+                {data.age} years old
               </p>
             </div>
           </div>
 
-          {/* Información del préstamo */}
+          {/* Loan Information */}
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-muted/30 p-3 rounded-lg text-center">
-                <p className="text-sm text-muted-foreground">Monto</p>
+                <p className="text-sm text-muted-foreground">Amount</p>
                 <p className="font-bold text-lg text-foreground">
                   ${data.amount.toLocaleString()}
                 </p>
@@ -89,7 +89,7 @@ const BorrowerDetailPage = () => {
 
             <div>
               <h3 className="font-montserrat font-bold text-foreground mb-2">
-                Descripción del préstamo
+                Loan description
               </h3>
               <p className="text-muted-foreground text-sm">
                 {data.description}
@@ -98,7 +98,7 @@ const BorrowerDetailPage = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-muted-foreground">Ingresos</p>
+                <p className="text-sm text-muted-foreground">Income</p>
                 <p className="font-bold text-foreground">
                   ${data.income.toLocaleString()}
                 </p>
@@ -120,8 +120,8 @@ const BorrowerDetailPage = () => {
 
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span>Progreso del préstamo</span>
-                <span className="font-medium">{data.fundedPercentage}% fondeado</span>
+                <span>Loan progress</span>
+                <span className="font-medium">{data.fundedPercentage}% funded</span>
               </div>
               <Progress value={data.fundedPercentage} className="h-3" />
             </div>
@@ -147,7 +147,7 @@ const BorrowerDetailPage = () => {
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                Monto a invertir en USDC
+                Amount to invest in USDC
               </label>
               <Input 
                 type="number"

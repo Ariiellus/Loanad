@@ -12,7 +12,7 @@ const BorrowerDetail2Page = () => {
   // Data por defecto si no viene del state
   const defaultBorrower = {
     id: 1,
-    name: 'Tu préstamo',
+    name: 'Your loan',
     age: 28,
     amount: 15000,
     interestRate: 12,
@@ -54,16 +54,16 @@ const BorrowerDetail2Page = () => {
                 {data.name}
               </h2>
               <p className="text-muted-foreground">
-                Estado de tu préstamo
+                Your loan status
               </p>
             </div>
           </div>
 
-          {/* Información del préstamo */}
+          {/* Loan Information */}
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-muted/30 p-3 rounded-lg text-center">
-                <p className="text-sm text-muted-foreground">Monto</p>
+                <p className="text-sm text-muted-foreground">Amount</p>
                 <p className="font-bold text-lg text-foreground">
                   ${data.amount.toLocaleString()}
                 </p>
@@ -78,7 +78,7 @@ const BorrowerDetail2Page = () => {
 
             <div>
               <h3 className="font-montserrat font-bold text-foreground mb-2">
-                Descripción del préstamo
+                Loan description
               </h3>
               <p className="text-muted-foreground text-sm">
                 {data.description}
@@ -87,7 +87,7 @@ const BorrowerDetail2Page = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-muted-foreground">Ingresos</p>
+                <p className="text-sm text-muted-foreground">Income</p>
                 <p className="font-bold text-foreground">
                   ${data.income.toLocaleString()}
                 </p>
@@ -109,8 +109,8 @@ const BorrowerDetail2Page = () => {
 
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span>Progreso del préstamo</span>
-                <span className="font-medium">{data.fundedPercentage}% fondeado</span>
+                <span>Loan progress</span>
+                <span className="font-medium">{data.fundedPercentage}% funded</span>
               </div>
               <Progress value={data.fundedPercentage} className="h-3" />
             </div>

@@ -14,13 +14,13 @@ interface ConfirmationItem {
 const ConfirmationsPage = () => {
   const router = useRouter();
   const [confirmations, setConfirmations] = useState<ConfirmationItem[]>([
-    { id: 'income', label: 'Comprobante de Ingresos', isConfirmed: false, isLoading: true },
-    { id: 'kyc', label: 'Verificación de Identidad', isConfirmed: false, isLoading: false },
-    { id: 'score', label: 'Puntuación de Crédito', isConfirmed: false, isLoading: false }
+    { id: 'income', label: 'Income Proof', isConfirmed: false, isLoading: true },
+    { id: 'kyc', label: 'Identity Verification', isConfirmed: false, isLoading: false },
+    { id: 'score', label: 'Credit Score', isConfirmed: false, isLoading: false }
   ]);
 
   useEffect(() => {
-    // Simular proceso de confirmación secuencial
+    // Simulate sequential confirmation process
     const confirmSequentially = async () => {
       for (let i = 0; i < confirmations.length; i++) {
         await new Promise(resolve => setTimeout(resolve, 2000));
@@ -35,7 +35,7 @@ const ConfirmationsPage = () => {
         }));
       }
       
-      // Cuando todas estén confirmadas, navegar después de un breve delay
+      // When all are confirmed, navigate after a brief delay
       setTimeout(() => {
         router.push('/pages/dashboard');
       }, 1000);
@@ -48,7 +48,7 @@ const ConfirmationsPage = () => {
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4 pt-20">
       <div className="max-w-md w-full space-y-8">
         <h2 className="text-3xl font-montserrat font-bold text-foreground text-center">
-          Confirmando datos
+          Confirming data
         </h2>
         
         <div className="space-y-6">

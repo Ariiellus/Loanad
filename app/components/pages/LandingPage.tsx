@@ -108,7 +108,7 @@ const LandingPageContent = () => {
                   onClick={handleContinue}
                   className="w-full bg-monad-purple hover:bg-monad-purple/90 text-white font-montserrat font-bold py-6 rounded-xl text-lg transition-all duration-300"
                 >
-                  Continuar
+                  Continue
                   <ArrowRight className="ml-2" size={20} />
                 </Button>
               </>
@@ -124,7 +124,7 @@ const LandingPageContent = () => {
       
       <div className="text-center">
         <p className="text-sm font-light text-muted-foreground">
-          Impulsado por Kairos Research
+          Powered by Kairos Research
         </p>
       </div>
     </div>

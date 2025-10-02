@@ -14,7 +14,7 @@ const DebtSection = ({ data }: DebtSectionProps) => {
   const pagadoPct = ((data.pagado / total) * 100).toFixed(1);
 
   const chartData = [
-    { name: 'Monto Financiado', value: data.pagado, percentage: pagadoPct }
+    { name: 'Funded Amount', value: data.pagado, percentage: pagadoPct }
   ];
 
   const COLORS = ['hsl(var(--monad-purple))', 'hsl(var(--muted))'];
@@ -35,12 +35,12 @@ const DebtSection = ({ data }: DebtSectionProps) => {
 
   return (
     <div className="bg-card rounded-lg border border-border p-6 shadow-sm">
-      <h2 className="text-2xl font-bold text-foreground mb-2">Deuda</h2>
-      <h3 className="text-sm text-muted-text mb-6">Los préstamos solicitados</h3>
+      <h2 className="text-2xl font-bold text-foreground mb-2">Debt</h2>
+      <h3 className="text-sm text-muted-text mb-6">Requested loans</h3>
       
       <div className="grid grid-cols-2 gap-4 mb-6">
         <div className="text-center">
-          <p className="text-sm text-muted-foreground mb-1">Por pagar</p>
+          <p className="text-sm text-muted-foreground mb-1">To pay</p>
           <p className="text-2xl font-bold text-monad-purple">
             ${data.porPagar.toLocaleString()}
           </p>

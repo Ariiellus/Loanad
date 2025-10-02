@@ -197,7 +197,7 @@ const VerificationPageContent = () => {
               }`}
             >
               <Paperclip className="mr-2" size={20} />
-              {documentUploaded ? "Comprobante subido" : "Comprobante de ingresos"}
+              {documentUploaded ? "Document uploaded" : "Income proof"}
             </Button>
 
             <Button 

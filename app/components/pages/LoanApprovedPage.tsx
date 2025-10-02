@@ -16,13 +16,13 @@ const LoanApprovedPage = () => {
         </div>
         
         <h2 className="text-2xl font-montserrat font-bold text-foreground">
-          ¡Felicidades, tu solicitud de préstamo fue aprobada!
+          Congratulations, your loan request was approved!
         </h2>
         
         <div className="space-y-4">
           <Card className="p-6 bg-card rounded-xl">
             <h3 className="text-lg font-montserrat font-bold text-foreground">
-              Préstamo aprobado: $10,000
+              Loan approved: $10,000
             </h3>
           </Card>
           
@@ -47,7 +47,7 @@ const LoanApprovedPage = () => {
             onClick={() => router.push('/borrower-detail2')}
             className="w-full bg-monad-purple hover:bg-monad-purple/90 text-white font-montserrat font-bold py-6 rounded-xl text-lg"
           >
-            Ver solicitud
+            View request
             <ArrowRight className="ml-2" size={20} />
           </Button>
           

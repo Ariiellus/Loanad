@@ -22,7 +22,7 @@ const InvestmentApprovedPage = () => {
         </div>
         
         <h2 className="text-2xl font-montserrat font-bold text-foreground">
-          ¡Inversión Completada!
+          Investment Completed!
         </h2>
         
         <div className="space-y-4">
@@ -45,7 +45,7 @@ const InvestmentApprovedPage = () => {
           {investmentAmount && (
             <Card className="p-4 bg-muted/30 rounded-xl">
               <p className="text-muted-foreground">
-                Has invertido <span className="font-bold text-foreground">${investmentAmount}</span> en {borrower?.name || 'el préstamo'}
+                You invested <span className="font-bold text-foreground">${investmentAmount}</span> in {borrower?.name || 'the loan'}
               </p>
             </Card>
           )}

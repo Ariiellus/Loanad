@@ -68,7 +68,7 @@ const BorrowerCard = ({
                 {loanData.borrower.slice(0, 6)}...{loanData.borrower.slice(-4)}
               </h3>
               <p className="text-sm text-muted-foreground truncate">
-                {amountInMON.toFixed(2)} MON - Préstamo #{loanData.loanId}
+                {amountInMON.toFixed(2)} MON - Loan #{loanData.loanId}
               </p>
             </div>
           </div>
@@ -83,16 +83,16 @@ const BorrowerCard = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <TrendingUp size={14} className="text-monad-purple shrink-0" />
-              <span className="text-sm font-medium">Colateral: {collateralInMON.toFixed(2)} MON</span>
+              <span className="text-sm font-medium">Collateral: {collateralInMON.toFixed(2)} MON</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
                 <CheckCircle size={14} className="text-green-500" />
-                <span className="text-green-600 text-xs font-medium">Verificado</span>
+                <span className="text-green-600 text-xs font-medium">Verified</span>
               </div>
               <div className={`flex items-center gap-1 ${loanData.isActive ? 'text-green-600' : 'text-red-600'}`}>
                 <div className={`w-2 h-2 rounded-full ${loanData.isActive ? 'bg-green-500' : 'bg-red-500'}`} />
-                <span className="text-xs font-medium">{loanData.isActive ? 'Activo' : 'Inactivo'}</span>
+                <span className="text-xs font-medium">{loanData.isActive ? 'Active' : 'Inactive'}</span>
               </div>
             </div>
           </div>
@@ -102,18 +102,18 @@ const BorrowerCard = ({
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <span className="text-blue-600 text-xs font-medium">📋 Solicitud de Préstamo</span>
+                  <span className="text-blue-600 text-xs font-medium">📋 Loan Request</span>
                 </div>
                 <span className="text-blue-600 text-xs font-medium">#{loanData.loanId}</span>
               </div>
               <div className="mt-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-blue-700">Monto Solicitado:</span>
+                  <span className="text-blue-700">Requested Amount:</span>
                   <span className="font-medium text-blue-700">{requestAmountInMON.toFixed(2)} MON</span>
                 </div>
                 <div className="flex justify-between text-sm mt-1">
-                  <span className="text-blue-700">Estado:</span>
-                  <span className="font-medium text-green-600">Pendiente de Fondeo</span>
+                  <span className="text-blue-700">Status:</span>
+                  <span className="font-medium text-green-600">Pending Funding</span>
                 </div>
               </div>
             </div>
@@ -123,8 +123,8 @@ const BorrowerCard = ({
         {/* Progress section */}
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Progreso de Colateral</span>
-            <span className="font-medium text-foreground">{fundingPercentage}% colateralizado</span>
+            <span className="text-muted-foreground">Collateral Progress</span>
+            <span className="font-medium text-foreground">{fundingPercentage}% collateralized</span>
           </div>
           <Progress value={fundingPercentage} className="h-2" />
         </div>
@@ -301,7 +301,7 @@ const BorrowersListPage = () => {
       setLoans(loanDetails);
     } catch (err) {
       console.error('Error fetching loan data:', err);
-      setError(err instanceof Error ? err.message : 'Error desconocido al cargar los préstamos');
+      setError(err instanceof Error ? err.message : 'Unknown error loading loans');
     } finally {
       setIsLoading(false);
     }
@@ -342,7 +342,7 @@ const BorrowersListPage = () => {
 
       if (response.ok) {
         const result = await response.json();
-        alert(`¡Préstamo fondeado exitosamente! Hash: ${result.txHash}`);
+        alert(`Loan funded successfully! Hash: ${result.txHash}`);
         // Refresh data after successful funding
         await fetchLoanData();
       } else {
@@ -351,7 +351,7 @@ const BorrowersListPage = () => {
       }
     } catch (error) {
       console.error('Error funding loan:', error);
-      alert(`Error al fondear el préstamo: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+      alert(`Error funding loan: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setProcessingLoanId(null);
     }
@@ -360,7 +360,7 @@ const BorrowersListPage = () => {
   const handleWithdrawFunds = async (loanData: LoanData) => {
     const inputAmount = inputAmounts[loanData.loanId];
     if (!inputAmount || parseFloat(inputAmount) <= 0) {
-      alert('Por favor ingresa una cantidad válida');
+      alert('Please enter a valid amount');
       return;
     }
 
@@ -385,16 +385,16 @@ const BorrowersListPage = () => {
 
       if (response.ok) {
         const result = await response.json();
-        alert(`¡Fondos retirados exitosamente! Hash: ${result.txHash}`);
+        alert(`Funds withdrawn successfully! Hash: ${result.txHash}`);
         // Refresh data after successful withdrawal
         await fetchLoanData();
       } else {
         const error = await response.json();
-        alert(`Error al retirar: ${error.error}`);
+        alert(`Error withdrawing funds: ${error.error}`);
       }
     } catch (error) {
       console.error('Error withdrawing funds:', error);
-      alert(`Error al retirar fondos: ${error instanceof Error ? error.message : 'Error desconocido'}`);
+      alert(`Error withdrawing funds: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setProcessingLoanId(null);
     }
@@ -423,7 +423,7 @@ const BorrowersListPage = () => {
                 Lista de Solicitantes
               </h2>
               <h3 className="text-sm text-muted-foreground">
-                Cargando préstamos...
+                Loading loans...
               </h3>
             </div>
           </div>
@@ -450,20 +450,20 @@ const BorrowersListPage = () => {
             </button>
             <div className="min-w-0 flex-1">
               <h2 className="text-xl font-montserrat font-bold text-foreground mb-1 truncate">
-                Lista de Solicitantes
+                Borrowers List
               </h2>
               <h3 className="text-sm text-muted-foreground">
-                Error al cargar datos
+                Error loading data
               </h3>
             </div>
           </div>
           
           <Card className="p-6 text-center">
             <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-foreground mb-2">Error al cargar préstamos</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-2">Error loading loans</h3>
             <p className="text-muted-foreground mb-4">{error}</p>
             <Button onClick={handleRefresh} className="bg-monad-purple hover:bg-monad-purple/90">
-              Reintentar
+              Retry
             </Button>
           </Card>
         </div>
@@ -488,20 +488,20 @@ const BorrowersListPage = () => {
                 Lista de Solicitantes
               </h2>
               <h3 className="text-sm text-muted-foreground">
-                No hay préstamos activos
+                No active loans
               </h3>
             </div>
           </div>
           
           <Card className="p-6 text-center">
             <div className="text-4xl mb-4">📋</div>
-            <h3 className="text-lg font-semibold text-foreground mb-2">No hay préstamos disponibles</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-2">No loans available</h3>
             <p className="text-muted-foreground mb-4">
-              Actualmente no hay solicitudes de préstamo activas en el sistema.
+              Currently there are no active loan requests in the system.
             </p>
             <Button onClick={handleRefresh} className="bg-monad-purple hover:bg-monad-purple/90">
               <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-              Actualizar
+              Update
             </Button>
           </Card>
         </div>
@@ -523,13 +523,13 @@ const BorrowersListPage = () => {
             </button>
             <div className="min-w-0 flex-1">
               <h2 className="text-xl font-montserrat font-bold text-foreground mb-1 truncate">
-                Lista de Solicitantes
+                Borrowers List
               </h2>
               <h3 className="text-sm text-muted-foreground">
-                {loans.length} préstamo{loans.length !== 1 ? 's' : ''} activo{loans.length !== 1 ? 's' : ''}
+                {loans.length} active loan{loans.length !== 1 ? 's' : ''}
                 {loans.filter(loan => loan.hasLoanRequest).length > 0 && (
                   <span className="ml-2 text-blue-600 font-medium">
-                    • {loans.filter(loan => loan.hasLoanRequest).length} solicitud{loans.filter(loan => loan.hasLoanRequest).length !== 1 ? 'es' : ''} pendiente{loans.filter(loan => loan.hasLoanRequest).length !== 1 ? 's' : ''}
+                    • {loans.filter(loan => loan.hasLoanRequest).length} pending request{loans.filter(loan => loan.hasLoanRequest).length !== 1 ? 's' : ''}
                   </span>
                 )}
               </h3>
@@ -545,7 +545,7 @@ const BorrowersListPage = () => {
                 disabled={isRefreshing}
               >
                 <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-                Actualizar
+                Update
               </Button>
             </div>
           </div>
@@ -555,7 +555,7 @@ const BorrowersListPage = () => {
         {loans.length > 0 && (
           <Card className="p-4 mb-6">
             <h4 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-              📊 Resumen de Préstamos Activos
+              📊 Active Loans Summary
               <span className="text-sm text-muted-foreground font-normal">
                 ({loans.length} total)
               </span>
@@ -565,11 +565,11 @@ const BorrowersListPage = () => {
                 <thead>
                   <tr className="border-b border-border/50">
                     <th className="text-left py-2 font-medium text-muted-foreground">ID</th>
-                    <th className="text-left py-2 font-medium text-muted-foreground">Prestatario</th>
-                    <th className="text-left py-2 font-medium text-muted-foreground">Monto Máx</th>
-                    <th className="text-left py-2 font-medium text-muted-foreground">Colateral</th>
-                    <th className="text-left py-2 font-medium text-muted-foreground">Solicitud</th>
-                    <th className="text-left py-2 font-medium text-muted-foreground">Estado</th>
+                    <th className="text-left py-2 font-medium text-muted-foreground">Borrower</th>
+                    <th className="text-left py-2 font-medium text-muted-foreground">Max Amount</th>
+                    <th className="text-left py-2 font-medium text-muted-foreground">Collateral</th>
+                    <th className="text-left py-2 font-medium text-muted-foreground">Request</th>
+                    <th className="text-left py-2 font-medium text-muted-foreground">Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -597,7 +597,7 @@ const BorrowersListPage = () => {
                         {loan.hasLoanRequest ? (
                           <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
                             <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                            Pendiente
+                              Pending
                           </span>
                         ) : (
                           <span className="text-muted-foreground text-xs">-</span>
@@ -612,7 +612,7 @@ const BorrowersListPage = () => {
                           <span className={`w-2 h-2 rounded-full ${
                             loan.isActive ? 'bg-green-500' : 'bg-red-500'
                           }`}></span>
-                          {loan.isActive ? 'Activo' : 'Inactivo'}
+                          {loan.isActive ? 'Active' : 'Inactive'}
                         </span>
                       </td>
                     </tr>

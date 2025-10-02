@@ -148,7 +148,7 @@ const AllFormPageContent = () => {
       if (initResult.success) {
         setMessage({ 
           type: 'success', 
-          text: `¡Verificación completada exitosamente! 
+          text: `Verification completed successfully! 
           Hash: ${initResult.txHash ? initResult.txHash.slice(0, 6) + '...' + initResult.txHash.slice(-4) : 'N/A'}
           Se han asignado 10 MON a tu cuenta y tu estado es verificado automáticamente.`
         });
@@ -198,7 +198,7 @@ const AllFormPageContent = () => {
         <Card className="p-6 space-y-6 bg-card rounded-xl shadow-sm">
           <div className="text-center space-y-4">
             <h2 className="text-3xl font-montserrat font-bold text-foreground">
-              Verificación
+              Verification
             </h2>
             <p className="text-muted-foreground text-sm leading-relaxed">
               Necesitamos estos documentos para verificar tu identidad y capacidad de pago. 
@@ -230,7 +230,7 @@ const AllFormPageContent = () => {
               }`}
             >
               <Paperclip className="mr-2" size={20} />
-              {documentUploaded ? "Comprobante subido" : "Comprobante de ingresos"}
+              {documentUploaded ? "Document uploaded" : "Income proof"}
             </Button>
 
             <Button 
@@ -260,7 +260,7 @@ const AllFormPageContent = () => {
                   Procesando...
                 </>
               ) : (
-                'Hacer Verificación'
+                'Complete Verification'
               )}
             </Button>
           </div>
