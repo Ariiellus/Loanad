@@ -46,7 +46,7 @@ const DebtSection = ({ data }: DebtSectionProps) => {
           </p>
         </div>
         <div className="text-center">
-          <p className="text-sm text-muted-foreground mb-1">Pagado</p>
+          <p className="text-sm text-muted-foreground mb-1">Paid</p>
           <p className="text-2xl font-bold text-foreground">
             ${data.pagado.toLocaleString()}
           </p>

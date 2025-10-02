@@ -13,7 +13,7 @@ const InvestmentCard = ({ borrowerName, amount, expectedReturn }: InvestmentCard
             {borrowerName}
           </h4>
           <p className="text-muted-foreground text-xs mb-2">
-            Solicitante
+            Borrower
           </p>
         </div>
         <div className="text-right">
@@ -21,7 +21,7 @@ const InvestmentCard = ({ borrowerName, amount, expectedReturn }: InvestmentCard
             ${amount.toLocaleString()}
           </p>
           <p className="text-xs text-muted-foreground">
-            {expectedReturn}% retorno estimado
+            {expectedReturn}% estimated return
           </p>
         </div>
       </div>

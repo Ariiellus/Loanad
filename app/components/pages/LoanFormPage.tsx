@@ -12,7 +12,7 @@ import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { monadTestnet } from 'wagmi/chains';
 
 /**
- * LoanFormPage - Solicitud de Préstamo
+ * LoanFormPage - Loan Request
  * 
  * Smart Contract Functions Used:
  * - 0x706f24a5 -> createLoanRequest(uint256) - Create new loan request

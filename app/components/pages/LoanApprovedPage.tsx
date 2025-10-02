@@ -29,14 +29,14 @@ const LoanApprovedPage = () => {
           <Card className="p-6 bg-card rounded-xl flex items-center justify-center gap-3">
             <TrendingUp className="text-monad-purple" size={24} />
             <h3 className="text-lg font-montserrat font-bold text-foreground">
-              Score crediticio: 700
+              Credit score: 700
             </h3>
           </Card>
           
           <Card className="p-4 bg-monad-purple rounded-xl">
             <div className="bg-white rounded-lg p-2">
               <p className="text-lg font-montserrat font-bold text-foreground">
-                Tasa a pagar: 12% fijo
+                Interest rate: 12% fixed
               </p>
             </div>
           </Card>
@@ -55,7 +55,7 @@ const LoanApprovedPage = () => {
             onClick={() => router.push('/pages/dashboard')}
             className="w-full bg-monad-purple hover:bg-monad-purple/90 text-white font-montserrat font-bold py-6 rounded-xl text-lg"
           >
-            Ir a Dashboard
+            Go to Dashboard
             <ArrowRight className="ml-2" size={20} />
           </Button>
         </div>

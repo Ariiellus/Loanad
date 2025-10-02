@@ -88,7 +88,7 @@ const VerificationPageContent = () => {
     try {
       if (!isConnected || !address) {
         console.error('No wallet connected');
-        setMessage({ type: 'error', text: 'No hay wallet conectada' });
+        setMessage({ type: 'error', text: 'No wallet connected' });
         return;
       }
 
@@ -117,8 +117,8 @@ const VerificationPageContent = () => {
       if (result.success) {
         setMessage({ 
           type: 'success', 
-          text: `¡Verificación completada exitosamente! 
-          Transacción: ${result.txHash ? result.txHash.slice(0, 6) + '...' + result.txHash.slice(-4) : 'N/A'}`
+          text: `Verification completed successfully! 
+          Transaction: ${result.txHash ? result.txHash.slice(0, 6) + '...' + result.txHash.slice(-4) : 'N/A'}`
         });
 
         // Save verification status to localStorage
@@ -134,14 +134,14 @@ const VerificationPageContent = () => {
           router.push('/pages/dashboard');
         }, 3000);
       } else {
-        throw new Error(result.error || 'Error en la verificación');
+        throw new Error(result.error || 'Error in verification');
       }
 
     } catch (error) {
       console.error('Error during verification:', error);
       setMessage({ 
         type: 'error', 
-        text: `Error durante la verificación: ${error instanceof Error ? error.message : 'Error desconocido'}` 
+        text: `Error during verification: ${error instanceof Error ? error.message : 'Unknown error'}` 
       });
     } finally {
       setIsSubmitting(false);
@@ -153,7 +153,7 @@ const VerificationPageContent = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-monad-purple mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Verificando estado...</p>
+          <p className="text-muted-foreground">Verifying status...</p>
         </div>
       </div>
     );
@@ -165,12 +165,12 @@ const VerificationPageContent = () => {
         <Card className="p-6 space-y-6 bg-card rounded-xl shadow-sm">
           <div className="text-center space-y-4">
             <h2 className="text-3xl font-montserrat font-bold text-foreground">
-              Verificación
+              Verification
             </h2>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              Necesitamos estos documentos para verificar tu identidad y capacidad de pago. 
-              Esto nos ayuda a ofrecerte las mejores condiciones y proteger tanto tu información 
-              como la de nuestros inversores.
+              We need these documents to verify your identity and ability to pay. 
+              This helps us offer you the best conditions and protect both your information 
+              and our investors.
             </p>
           </div>
           
@@ -209,7 +209,7 @@ const VerificationPageContent = () => {
               }`}
             >
               <User className="mr-2" size={20} />
-              {kycCompleted ? "KYC completado" : "Realiza KYC"}
+              {kycCompleted ? "KYC completed" : "Complete KYC"}
             </Button>
 
             <Button 
@@ -224,10 +224,10 @@ const VerificationPageContent = () => {
               {isSubmitting ? (
                 <>
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Procesando...
+                  Processing...
                 </>
               ) : (
-                'Hacer Verificación'
+                'Verify'
               )}
             </Button>
           </div>

@@ -27,7 +27,7 @@ const InvestmentsSection = ({ totalInvested, averageReturn, investments }: Inves
           </p>
         </div>
         <div className="text-center">
-          <p className="text-sm text-muted-foreground mb-1">Tasa de rendimiento promedio</p>
+          <p className="text-sm text-muted-foreground mb-1">Average return rate</p>
           <p className="text-2xl font-bold text-foreground">
             {averageReturn}%
           </p>

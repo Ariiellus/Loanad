@@ -189,12 +189,12 @@ const DashboardPage = () => {
         });
       } else {
         console.error('DashboardPage - Verification request failed:', verificationResponse.status);
-        setError('Error al verificar usuario');
+        setError('Error verifying user');
       }
 
     } catch (err) {
       console.error('DashboardPage - Error fetching contract data:', err);
-      setError('Error al cargar datos del contrato');
+      setError('Error loading contract data');
     } finally {
       setIsLoading(false);
     }
@@ -682,7 +682,7 @@ const DashboardPage = () => {
 
         {/* Quick Actions */}
         <Card className="p-6 bg-white/80 backdrop-blur-sm border-white/20 shadow-sm">
-          <h3 className="text-lg font-montserrat font-bold text-gray-800 mb-4">Acciones Rápidas</h3>
+          <h3 className="text-lg font-montserrat font-bold text-gray-800 mb-4">Quick Actions</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Button 
               onClick={() => router.push('/pages/loan-form')}
@@ -705,7 +705,7 @@ const DashboardPage = () => {
               className="w-full border-gray-300 hover:border-monad-purple py-3"
             >
               <RefreshCw className="h-4 w-4 mr-2" />
-              Update Datos
+              Update Data
             </Button>
 
           </div>

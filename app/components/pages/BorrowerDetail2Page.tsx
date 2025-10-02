@@ -16,19 +16,16 @@ const BorrowerDetail2Page = () => {
     age: 28,
     amount: 15000,
     interestRate: 12,
-    purpose: 'Expandir mi negocio de desarrollo web',
+    purpose: 'Expand my web development business',
     score: 750,
     fundedPercentage: 45,
     avatar: '🚀',
     income: 8000,
     expenses: 4500,
-    description: 'Necesito capital para expandir mi agencia de desarrollo web. Con esta inversión podré contratar más desarrolladores y tomar proyectos más grandes.'
+    description: 'I need capital to expand my web development agency. With this investment I can hire more developers and take on larger projects.'
   };
 
-  const data = {
-    ...defaultBorrower,
-    ...borrower
-  };
+  const data = borrower || defaultBorrower;
 
   return (
     <div className="min-h-screen bg-background px-4 py-8 pb-32">
@@ -44,7 +41,7 @@ const BorrowerDetail2Page = () => {
             </button>
           </div>
           
-          {/* Header con avatar y datos básicos */}
+          {/* Header with avatar and basic data */}
           <div className="text-center space-y-4 mb-6">
             <div className="w-24 h-24 bg-gradient-to-br from-monad-purple/30 to-monad-purple/60 rounded-2xl flex items-center justify-center text-4xl mx-auto">
               {data.avatar}
@@ -69,7 +66,7 @@ const BorrowerDetail2Page = () => {
                 </p>
               </div>
               <div className="bg-muted/30 p-3 rounded-lg text-center">
-                <p className="text-sm text-muted-foreground">Tasa</p>
+                <p className="text-sm text-muted-foreground">Rate</p>
                 <p className="font-bold text-lg text-monad-purple">
                   {data.interestRate}%
                 </p>
@@ -93,7 +90,7 @@ const BorrowerDetail2Page = () => {
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Egresos</p>
+                <p className="text-sm text-muted-foreground">Expenses</p>
                 <p className="font-bold text-foreground">
                   ${data.expenses.toLocaleString()}
                 </p>
@@ -103,7 +100,7 @@ const BorrowerDetail2Page = () => {
             <div className="flex items-center gap-2">
               <TrendingUp className="text-monad-purple" size={20} />
               <span className="font-bold text-foreground">
-                Score crediticio: {data.score}
+                Credit Score: {data.score}
               </span>
             </div>
 
@@ -118,10 +115,10 @@ const BorrowerDetail2Page = () => {
             {/* Botones de acción */}
             <div className="grid grid-cols-2 gap-3 mt-6">
               <button className="h-9 px-4 bg-muted text-muted-foreground hover:bg-muted/80 rounded-md text-sm font-medium transition-colors flex items-center justify-center">
-                💰 Pagar
+                💰 Pay
               </button>
               <button className="h-9 px-4 bg-muted text-muted-foreground hover:bg-muted/80 rounded-md text-sm font-medium transition-colors flex items-center justify-center">
-                💸 Retirar
+                💸 Withdraw
               </button>
             </div>
           </div>

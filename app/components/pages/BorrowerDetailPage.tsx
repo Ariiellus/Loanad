@@ -26,7 +26,7 @@ const BorrowerDetailPage = () => {
     avatar: '🚀',
     income: 8000,
     expenses: 4500,
-    description: 'Necesito capital para expandir mi agencia de desarrollo web. Con esta inversión podré contratar más desarrolladores y tomar proyectos más grandes.'
+    description: 'I need capital to expand my web development agency. With this investment, I will be able to hire more developers and take on larger projects.'
   };
 
   const data = {
@@ -55,7 +55,7 @@ const BorrowerDetailPage = () => {
               <X size={24} />
             </button>
           </div>
-          {/* Header con avatar y datos básicos */}
+          {/* Header with avatar and basic data */}
           <div className="text-center space-y-4 mb-6">
             <div className="w-24 h-24 bg-gradient-to-br from-monad-purple/30 to-monad-purple/60 rounded-2xl flex items-center justify-center text-4xl mx-auto">
               {data.avatar}
@@ -126,22 +126,22 @@ const BorrowerDetailPage = () => {
               <Progress value={data.fundedPercentage} className="h-3" />
             </div>
 
-            {/* Botones de acción */}
+            {/* Action buttons */}
             <div className="grid grid-cols-2 gap-3 mt-6">
               <button className="h-9 px-4 bg-muted text-muted-foreground hover:bg-muted/80 rounded-md text-sm font-medium transition-colors flex items-center justify-center">
-                🔄 Reinvertir
+                🔄 Reinvest
               </button>
               <button className="h-9 px-4 bg-muted text-muted-foreground hover:bg-muted/80 rounded-md text-sm font-medium transition-colors flex items-center justify-center">
-                💰 Reclamar
+                💰 Claim
               </button>
             </div>
           </div>
         </Card>
 
-        {/* Sección de inversión */}
+        {/* Investment section */}
         <Card className="p-6 bg-card rounded-xl shadow-sm">
           <h3 className="text-xl font-montserrat font-bold text-foreground mb-4">
-            Tu inversión
+            Your investment
           </h3>
           
           <div className="space-y-4">
@@ -174,7 +174,7 @@ const BorrowerDetailPage = () => {
             {investmentAmount && (
               <div className="bg-green-50 p-4 rounded-lg border border-green-200">
                 <p className="text-sm text-green-700">
-                  Ganancia anual estimada: <span className="font-bold">
+                  Estimated annual return: <span className="font-bold">
                     ${(parseFloat(investmentAmount) * data.interestRate / 100).toFixed(2)}
                   </span>
                 </p>
@@ -186,7 +186,7 @@ const BorrowerDetailPage = () => {
               disabled={!investmentAmount}
               className="w-full bg-monad-purple hover:bg-monad-purple/90 text-white font-montserrat font-bold py-6 rounded-xl text-lg transition-all duration-300"
             >
-              Confirmar inversión
+              Confirm investment
               <ArrowRight className="ml-2" size={20} />
             </Button>
           </div>

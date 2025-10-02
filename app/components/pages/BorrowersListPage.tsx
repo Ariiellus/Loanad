@@ -134,7 +134,7 @@ const BorrowerCard = ({
           {/* Input for amount */}
           <div className="space-y-2">
             <label className="block text-xs font-medium text-muted-foreground">
-              Cantidad en MON
+              Amount in MON
             </label>
             <Input 
               type="number"
@@ -158,12 +158,12 @@ const BorrowerCard = ({
               {processingLoanId === loanData.loanId ? (
                 <>
                   <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
-                  Procesando...
+                  Processing...
                 </>
               ) : (
                 <>
                   <span className="mr-1">💰</span>
-                  Fondear
+                  Fund
                 </>
               )}
             </Button>
@@ -177,12 +177,12 @@ const BorrowerCard = ({
               {processingLoanId === loanData.loanId ? (
                 <>
                   <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
-                  Procesando...
+                  Processing...
                 </>
               ) : (
                 <>
                   <span className="mr-1">💸</span>
-                  Retirar
+                  Withdraw
                 </>
               )}
             </Button>
@@ -347,7 +347,7 @@ const BorrowersListPage = () => {
         await fetchLoanData();
       } else {
         const error = await response.json();
-        alert(`Error al fondear: ${error.error}`);
+        alert(`Error funding loan: ${error.error}`);
       }
     } catch (error) {
       console.error('Error funding loan:', error);

@@ -90,7 +90,7 @@ const AllFormPageContent = () => {
     try {
       if (!isConnected || !address) {
         console.error('No wallet connected');
-        setMessage({ type: 'error', text: 'No hay wallet conectada' });
+        setMessage({ type: 'error', text: 'No wallet connected' });
         return;
       }
 
@@ -99,7 +99,7 @@ const AllFormPageContent = () => {
 
       // Step 1: Call backend to check if user is already verified
       console.log('AllFormPage - Checking if user is already verified...');
-      setMessage({ type: 'success', text: 'Verificando estado del usuario...' });
+      setMessage({ type: 'success', text: 'Checking user status...' });
       
       const checkResponse = await fetch('https://loanadback.vercel.app/api/check-verification', {
         method: 'POST',
@@ -115,7 +115,7 @@ const AllFormPageContent = () => {
           // User is already verified, just go to dashboard
           setMessage({ 
             type: 'success', 
-            text: '¡Usuario ya verificado! Redirigiendo al dashboard...' 
+            text: 'User already verified! Redirecting to dashboard...' 
           });
           
           setTimeout(() => {
@@ -129,7 +129,7 @@ const AllFormPageContent = () => {
       console.log('AllFormPage - User not verified, calling backend to assign 10 MON and verify...');
       setMessage({ 
         type: 'success', 
-        text: 'Procesando... El propietario está asignando 10 MON a tu cuenta...' 
+        text: 'Processing... The owner is assigning 10 MON to your account...' 
       });
       
       const initResponse = await fetch('https://loanadback.vercel.app/api/init-loan', {
@@ -150,7 +150,8 @@ const AllFormPageContent = () => {
           type: 'success', 
           text: `Verification completed successfully! 
           Hash: ${initResult.txHash ? initResult.txHash.slice(0, 6) + '...' + initResult.txHash.slice(-4) : 'N/A'}
-          Se han asignado 10 MON a tu cuenta y tu estado es verificado automáticamente.`
+          10 MON assigned to your account and your status is verified automatically. `
+          
         });
 
         // Save verification status to localStorage
@@ -167,14 +168,14 @@ const AllFormPageContent = () => {
           router.push('/dashboard');
         }, 3000);
       } else {
-        throw new Error(initResult.error || 'Error en la verificación y asignación');
+        throw new Error(initResult.error || 'Error in verification and assignment');
       }
 
     } catch (error) {
       console.error('AllFormPage - Error during verification process:', error);
       setMessage({ 
         type: 'error', 
-        text: `Error durante la verificación: ${error instanceof Error ? error.message : 'Error desconocido'}` 
+        text: `Error during verification: ${error instanceof Error ? error.message : 'Unknown error'}` 
       });
     } finally {
       setIsSubmitting(false);
@@ -186,7 +187,7 @@ const AllFormPageContent = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-monad-purple mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Verificando estado...</p>
+          <p className="text-muted-foreground">Verifying status...</p>
         </div>
       </div>
     );
@@ -201,9 +202,9 @@ const AllFormPageContent = () => {
               Verification
             </h2>
             <p className="text-muted-foreground text-sm leading-relaxed">
-              Necesitamos estos documentos para verificar tu identidad y capacidad de pago. 
-              Esto nos ayuda a ofrecerte las mejores condiciones y proteger tanto tu información 
-              como la de nuestros inversores.
+              We need these documents to verify your identity and ability to pay. 
+              This helps us offer you the best conditions and protect both your information 
+              and our investors.
             </p>
           </div>
           
@@ -242,7 +243,7 @@ const AllFormPageContent = () => {
               }`}
             >
               <User className="mr-2" size={20} />
-              {kycCompleted ? "KYC completado" : "Realiza KYC"}
+              {kycCompleted ? "KYC completed" : "Complete KYC"}
             </Button>
 
             <Button 
@@ -257,7 +258,7 @@ const AllFormPageContent = () => {
               {isSubmitting ? (
                 <>
                   <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Procesando...
+                  Processing...
                 </>
               ) : (
                 'Complete Verification'
