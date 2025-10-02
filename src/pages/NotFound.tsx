@@ -1,18 +1,19 @@
-import { useLocation, useNavigate } from "react-router-dom";
+"use client";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
 const NotFound = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     console.error(
       "404 Error: User attempted to access non-existent route:",
-      location.pathname
+      pathname
     );
-  }, [location.pathname]);
+  }, [pathname]);
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-4 pt-20">
@@ -23,7 +24,7 @@ const NotFound = () => {
           Oops! Página no encontrada
         </p>
         <Button 
-          onClick={() => navigate('/')}
+          onClick={() => router.push('/')}
           className="bg-monad-purple hover:bg-monad-purple/90 text-white font-montserrat font-bold py-4 px-8 rounded-xl"
         >
           Regresar a Inicio

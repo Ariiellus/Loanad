@@ -37,7 +37,7 @@ const LandingPageContent = () => {
       console.log('LandingPage - Checking verification status for:', address);
       
       // Call backend API to check if user is already verified on-chain
-      const response = await fetch('http://localhost:4000/api/check-verification', {
+      const response = await fetch('https://loanadback.vercel.app/api/check-verification', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -66,8 +66,9 @@ const LandingPageContent = () => {
       }
     } catch (error) {
       console.error('LandingPage - Error checking verification:', error);
-      // On error, fallback to verification page
-                router.push('/verification');
+      // On error, show user-friendly message and fallback to verification page
+      alert('Unable to connect to the server. Please try again or proceed to verification.');
+      router.push('/verification');
     }
   };
 
@@ -113,7 +114,9 @@ const LandingPageContent = () => {
               </>
             )}
             <div className="flex justify-center">
-              <WalletConnection />
+              <div className="w-full max-w-sm">
+                <WalletConnection />
+              </div>
             </div>
           </div>
         </div>

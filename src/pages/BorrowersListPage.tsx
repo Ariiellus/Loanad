@@ -220,7 +220,7 @@ const BorrowersListPage = () => {
       setError(null);
 
       // Fetch total loans count
-      const totalLoansResponse = await fetch('http://localhost:4000/api/get-total-loans');
+      const totalLoansResponse = await fetch('https://loanadback.vercel.app/api/get-total-loans');
       if (!totalLoansResponse.ok) throw new Error('Error fetching total loans');
       const totalLoans = await totalLoansResponse.json();
       
@@ -230,7 +230,7 @@ const BorrowersListPage = () => {
       }
 
       // Fetch active loan IDs
-      const activeLoansResponse = await fetch('http://localhost:4000/api/get-active-loan-ids');
+      const activeLoansResponse = await fetch('https://loanadback.vercel.app/api/get-active-loan-ids');
       if (!activeLoansResponse.ok) throw new Error('Error fetching active loan IDs');
       const activeLoans = await activeLoansResponse.json();
       
@@ -242,7 +242,7 @@ const BorrowersListPage = () => {
       for (const loanId of activeLoanIds) {
         try {
           // Fetch borrower for this loan
-          const borrowerResponse = await fetch('http://localhost:4000/api/get-loan-borrower', {
+          const borrowerResponse = await fetch('https://loanadback.vercel.app/api/get-loan-borrower', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ loanId: parseInt(loanId) })
@@ -251,7 +251,7 @@ const BorrowersListPage = () => {
           const borrowerData = await borrowerResponse.json();
           
           // Fetch collateral for this loan
-          const collateralResponse = await fetch('http://localhost:4000/api/get-loan-collateral', {
+          const collateralResponse = await fetch('https://loanadback.vercel.app/api/get-loan-collateral', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ loanId: parseInt(loanId) })
@@ -260,7 +260,7 @@ const BorrowersListPage = () => {
           const collateralData = await collateralResponse.json();
           
           // Fetch maximum amount for this borrower
-          const maxAmountResponse = await fetch('http://localhost:4000/api/get-max-amount', {
+          const maxAmountResponse = await fetch('https://loanadback.vercel.app/api/get-max-amount', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ userAddress: borrowerData.borrower })
@@ -331,7 +331,7 @@ const BorrowersListPage = () => {
       // Call the smart contract function addCollateralForCrowfundedLoan(uint256)
       // Function selector: 0x5886cb68
       // This function expects the loanId and msg.value will be the amount
-      const response = await fetch('http://localhost:4000/api/add-collateral', {
+      const response = await fetch('https://loanadback.vercel.app/api/add-collateral', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -374,7 +374,7 @@ const BorrowersListPage = () => {
       // Call the smart contract function withdrawForCrowfundedLoan(uint256,uint256)
       // Function selector: 0x1e7b5766
       // First argument: amount, Second argument: loanId
-      const response = await fetch('http://localhost:4000/api/withdraw-collateral', {
+      const response = await fetch('https://loanadback.vercel.app/api/withdraw-collateral', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

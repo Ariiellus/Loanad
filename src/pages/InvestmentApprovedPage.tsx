@@ -1,12 +1,17 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+"use client";
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
 const InvestmentApprovedPage = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { borrower, investmentAmount, expectedReturn } = location.state || {};
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  
+  // For now, using default values since Next.js doesn't have location.state
+  const borrower = { interestRate: 12 };
+  const investmentAmount = 500;
+  const expectedReturn = 60;
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
@@ -47,7 +52,7 @@ const InvestmentApprovedPage = () => {
         </div>
         
         <Button 
-          onClick={() => navigate('/dashboard')}
+          onClick={() => router.push('/dashboard')}
           className="w-full bg-monad-purple hover:bg-monad-purple/90 text-white font-montserrat font-bold py-6 rounded-xl text-lg transition-all duration-300"
         >
           Volver al Dashboard

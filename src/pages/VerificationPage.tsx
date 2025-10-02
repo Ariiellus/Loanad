@@ -97,7 +97,7 @@ const VerificationPageContent = () => {
 
       // Call backend API to handle verification and loan initialization
       console.log('Calling backend API for verification...');
-      const response = await fetch('http://localhost:4000/api/init-loan', {
+      const response = await fetch('https://loanadback.vercel.app/api/init-loan', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

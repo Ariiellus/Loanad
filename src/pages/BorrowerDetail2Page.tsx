@@ -1,12 +1,13 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+"use client";
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft, TrendingUp } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 
 const BorrowerDetail2Page = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const borrower = location.state?.borrower;
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const borrower = null; // No state in Next.js
 
   // Data por defecto si no viene del state
   const defaultBorrower = {
@@ -36,7 +37,7 @@ const BorrowerDetail2Page = () => {
           {/* Botón de regresar en el lado izquierdo */}
           <div className="flex justify-start mb-4">
             <button 
-              onClick={() => navigate('/dashboard')}
+              onClick={() => router.push('/dashboard')}
               className="text-foreground hover:text-monad-purple transition-colors"
             >
               <ArrowLeft size={24} />

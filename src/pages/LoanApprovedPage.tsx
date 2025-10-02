@@ -1,10 +1,11 @@
-import { useNavigate } from 'react-router-dom';
+"use client";
+import { useRouter } from 'next/navigation';
 import { ArrowRight, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 
 const LoanApprovedPage = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
@@ -43,7 +44,7 @@ const LoanApprovedPage = () => {
         
         <div className="space-y-3">
           <Button 
-            onClick={() => navigate('/borrower-detail2')}
+            onClick={() => router.push('/borrower-detail2')}
             className="w-full bg-monad-purple hover:bg-monad-purple/90 text-white font-montserrat font-bold py-6 rounded-xl text-lg"
           >
             Ver solicitud
@@ -51,7 +52,7 @@ const LoanApprovedPage = () => {
           </Button>
           
           <Button 
-            onClick={() => navigate('/dashboard')}
+            onClick={() => router.push('/dashboard')}
             className="w-full bg-monad-purple hover:bg-monad-purple/90 text-white font-montserrat font-bold py-6 rounded-xl text-lg"
           >
             Ir a Dashboard

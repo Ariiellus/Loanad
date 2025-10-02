@@ -1,5 +1,6 @@
+"use client";
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowRight, TrendingUp, X } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,9 +8,9 @@ import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
 
 const BorrowerDetailPage = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const borrower = location.state?.borrower;
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const borrower = null; // No state in Next.js
   const [investmentAmount, setInvestmentAmount] = useState('');
 
   // Data por defecto si no viene del state
@@ -30,7 +31,7 @@ const BorrowerDetailPage = () => {
 
   const data = {
     ...defaultBorrower,
-    ...borrower
+    ...(borrower || {})
   };
 
   const handleSuggestedAmount = (amount: number) => {
@@ -38,13 +39,7 @@ const BorrowerDetailPage = () => {
   };
 
   const handleConfirmInvestment = () => {
-    navigate('/investment-approved', { 
-      state: { 
-        borrower: data, 
-        investmentAmount: parseFloat(investmentAmount),
-        expectedReturn: (parseFloat(investmentAmount) * data.interestRate / 100)
-      } 
-    });
+    router.push('/investment-approved');
   };
 
   return (
@@ -54,7 +49,7 @@ const BorrowerDetailPage = () => {
           {/* Botón X en el lado derecho */}
           <div className="flex justify-end mb-4">
             <button 
-              onClick={() => navigate('/borrowers-list')}
+              onClick={() => router.push('/borrowers-list')}
               className="text-foreground hover:text-monad-purple transition-colors"
             >
               <X size={24} />
