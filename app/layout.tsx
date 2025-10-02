@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Montserrat } from 'next/font/google'
 import './globals.css'
 import { Providers } from '@/components/Providers'
 import { Toaster } from "@/components/ui/toaster"
@@ -7,10 +7,14 @@ import { Toaster as Sonner } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import BottomNav from '@/components/BottomNav'
 
-const inter = Inter({ subsets: ['latin'] })
+const montserrat = Montserrat({ 
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800'],
+  variable: '--font-montserrat'
+})
 
 export const metadata: Metadata = {
-  title: 'Loanad',
+  title: 'Loanad - Decentralized lending platform',
   description: 'Decentralized lending platform',
 }
 
@@ -21,7 +25,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={montserrat.className}>
         <Providers>
           <TooltipProvider>
             <Toaster />
@@ -34,3 +38,4 @@ export default function RootLayout({
     </html>
   )
 }
+
