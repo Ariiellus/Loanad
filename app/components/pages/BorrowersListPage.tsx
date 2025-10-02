@@ -195,7 +195,7 @@ const BorrowerCard = ({
             className="w-full border-monad-purple/30 text-monad-purple hover:bg-monad-purple/10 font-montserrat font-medium py-2 rounded-lg transition-all duration-300 text-sm"
           >
             <span className="mr-1">👁️</span>
-            Ver Detalles
+            View Details
           </Button>
         </div>
       </div>
@@ -316,7 +316,7 @@ const BorrowersListPage = () => {
   const handleFundLoan = async (loanData: LoanData) => {
     const inputAmount = inputAmounts[loanData.loanId];
     if (!inputAmount || parseFloat(inputAmount) <= 0) {
-      alert('Por favor ingresa una cantidad válida');
+      alert('Please enter a valid amount');
       return;
     }
 
@@ -420,7 +420,7 @@ const BorrowersListPage = () => {
             </button>
             <div className="min-w-0 flex-1">
               <h2 className="text-xl font-montserrat font-bold text-foreground mb-1 truncate">
-                Lista de Solicitantes
+                Borrowers List
               </h2>
               <h3 className="text-sm text-muted-foreground">
                 Loading loans...
@@ -485,7 +485,7 @@ const BorrowersListPage = () => {
             </button>
             <div className="min-w-0 flex-1">
               <h2 className="text-xl font-montserrat font-bold text-foreground mb-1 truncate">
-                Lista de Solicitantes
+                Borrowers List
               </h2>
               <h3 className="text-sm text-muted-foreground">
                 No active loans

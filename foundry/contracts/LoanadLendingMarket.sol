@@ -10,7 +10,7 @@ error LoanadLendingMarket__BorrowingFailed();
 error LoanadLendingMarket__RepayingFailed();
 error LoanadLendingMarket__PositionSafe();
 error LoanadLendingMarket__NotLiquidatable();
-error LoanadLendingMarket__InsufficientLiquidatorMON();
+error LoanadLendingMarket__InsufficientLiquidator();
 error LoanadLendingMarket__CrowfundedLoanDoesNotExist();
 error LoanadLendingMarket__NotMarket();
 error LoanadLendingMarket__LoanNotActive();
@@ -18,26 +18,24 @@ error LoanadLendingMarket__LoanNotActive();
 /**
  * @title Nomi Lending Market
  * @author @Ariiellus
- * @notice This contracts allow users to request loan in a crowdfunding way.
+ * @notice This contracts allow users to request  a crowdfunded loan.
  */
 contract LoanadLendingMarket is Ownable {
-    uint256 private constant COLLATERAL_RATIO = 120; // 120% collateralization required wether using MON or MON
-    uint256 private constant INCREASE_DEBT_VALUE = 20; // 20% increase in debt value
+    uint256 private constant MIN_COLLATERAL_RATIO = 120; 
+    uint256 private constant INCREASE_DEBT_VALUE = 20;
     mapping(uint256 => bool) public isLoanActive;
     uint256[] public activeLoanIds;
     uint256 public totalLoans;
 
     // loan side mappings
-    mapping(uint256 => address) public s_crowfundedLoanId; // Loan id -> borrower address
-    mapping(uint256 => uint256) public s_collateralForLoanId; // Loan id -> total collateral amount
-    mapping(address => uint256) public s_maximumAmountForLoan; // User address -> maximum amount that can be borrowed
-    mapping(address => uint256) public s_debtorBorrowed; // User's borrowed MON balance
-    mapping(address => bool) public s_verifiedUsers; // User address -> whether they're verified
+    mapping(uint256 => address) public s_crowfundedLoanId; 
+    mapping(uint256 => uint256) public s_collateralForLoanId; 
+    mapping(address => uint256) public s_maximumAmountForLoan;
+    mapping(address => uint256) public s_debtorBorrowed;
+    mapping(address => bool) public s_verifiedUsers;
     // lender side mappings
-    mapping(address => uint256) public s_lenderCollateral; // Lender's collateral balance
-    mapping(address => uint256) public s_lenderCrowfundedLoanId; // lender address -> crowfunded loan id that they're funding
-
-    // MON token should be trated as ETH in the contract
+    mapping(address => uint256) public s_lenderCollateral;
+    mapping(address => uint256) public s_lenderCrowfundedLoanId;
 
     event LoanRequestCreated(uint256 indexed loanId, address indexed borrower);
     event CollateralAdded(
@@ -65,7 +63,7 @@ contract LoanadLendingMarket is Ownable {
 
     /**
      * @notice Creates a new crowdfunded loan request
-     * @param amountToBorrow The amount of MON to borrow
+     * @param amountToBorrow The amount to borrow
      * @return loanId The ID of the newly created loan
      * @notice the amountToBorrow can't be greater than the maximum amount that can be borrowed which is assigned by the market after the user logs in for the first time
      */
@@ -138,7 +136,7 @@ contract LoanadLendingMarket is Ownable {
     /**
      * @notice Calculates the total collateral value for a lender in USD
      * @param lender The address of the lender to calculate the collateral value for
-     * @return uint256 The collateral value in USD (3 USD per MON)
+     * @return uint256 The collateral value in USD
      */
     function calculateCollateralValue(
         address lender
@@ -182,7 +180,7 @@ contract LoanadLendingMarket is Ownable {
             return false;
         }
 
-        return (positionRatio * 100) < COLLATERAL_RATIO * 1e18;
+        return (positionRatio * 100) < MIN_COLLATERAL_RATIO * 1e18;
     }
 
     /**
@@ -196,10 +194,10 @@ contract LoanadLendingMarket is Ownable {
     }
 
     /**
-     * @notice Allows users to borrow MON based on their collateral
-     * @param borrowAmount The amount of MON to borrow
+     * @notice Allows users to borrow based on their collateral
+     * @param borrowAmount The amount to borrow
      */
-    function borrowMON(uint256 borrowAmount) public payable {
+    function borrow(uint256 borrowAmount) public payable {
         if (borrowAmount == 0) {
             revert LoanadLendingMarket__InvalidAmount();
         }
@@ -225,14 +223,18 @@ contract LoanadLendingMarket is Ownable {
     }
 
     /**
-     * @notice Allows users to repay MON and reduce their debt
+     * @notice Allows users to repay and reduce their debt
      */
-    function repayMON() public payable {
+    function repay() public payable {
         if (msg.value == 0 || msg.value > s_debtorBorrowed[msg.sender]) {
             revert LoanadLendingMarket__InvalidAmount();
         }
 
         s_debtorBorrowed[msg.sender] -= msg.value;
+
+        if (s_debtorBorrowed[msg.sender] == 0) {
+            markLoanInactive(s_lenderCrowfundedLoanId[msg.sender]);
+        }
 
         emit DebtRepaid(msg.sender, msg.value);
         newMaximumAmountForLoan(msg.sender);
@@ -241,7 +243,7 @@ contract LoanadLendingMarket is Ownable {
     /**
      * @notice Allows liquidators to liquidate unsafe positions
      * @param user The address of the user to liquidate
-     * @dev The caller must have enough MON to pay back user's debt
+     * @dev The caller must have enough to pay back user's debt
      * @dev The caller must have approved this contract to transfer the debt
      */
 
@@ -252,17 +254,11 @@ contract LoanadLendingMarket is Ownable {
     // This function is called after the user logs in for the first time
     function assignMaximumAmountForLoan(
         address user
-    ) external onlyOwner {
-        uint256 amountForLoan = 10 ether; // hardcoded for now
-        uint256 amountToSend = 0.1 ether;
+    ) public  {
+        uint256 amountForLoan = 10 ether; // hardcoded for now, in the future requires risk assessment before assigning credit limit
         s_maximumAmountForLoan[user] = amountForLoan;
 
         verifyUser(user);
-
-        (bool success, ) = user.call{value: amountToSend}("");
-        if (!success) {
-            revert LoanadLendingMarket__TransferFailed();
-        }
     }
 
     function newMaximumAmountForLoan(address user) internal returns (uint256) {
@@ -273,7 +269,7 @@ contract LoanadLendingMarket is Ownable {
         return newAmount;
     }
 
-    function verifyUser(address user) public onlyOwner {
+    function verifyUser(address user) internal {
         s_verifiedUsers[user] = true;
     }
 
@@ -281,7 +277,7 @@ contract LoanadLendingMarket is Ownable {
         return isLoanActive[loanId];
     }
 
-    function markLoanInactive(uint256 loanId) external {
+    function markLoanInactive(uint256 loanId) internal {
         if (!isLoanActive[loanId]) {
             revert LoanadLendingMarket__LoanNotActive();
         }

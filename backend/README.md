@@ -71,4 +71,4 @@ If you encounter CORS issues:
 
 ## Smart Contract Integration
 
-This backend integrates with the LoanadLendingMarket smart contract at address `0x2072d7D9E54cea8998eA6D5C39CB07766e48B314`.
+This backend integrates with the LoanadLendingMarket smart contract at address `0x6C92343713EE9e8449c14f98E30f02Ebe7C91CE7`.

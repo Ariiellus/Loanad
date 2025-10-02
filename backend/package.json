@@ -16,7 +16,11 @@
   "devDependencies": {
     "nodemon": "^3.0.1"
   },
-  "keywords": ["lending", "defi", "ethereum"],
+  "keywords": [
+    "lending",
+    "defi",
+    "ethereum"
+  ],
   "author": "LOANAD Team",
   "license": "MIT"
 }

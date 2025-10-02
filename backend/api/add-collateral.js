@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 
 // Smart Contract: LoanadLendingMarket
-// Address: 0x2072d7D9E54cea8998eA6D5C39CB07766e48B314
+// Address: 0x6C92343713EE9e8449c14f98E30f02Ebe7C91CE7
 // Function Selectors:
 // - 0x5886cb68 -> addCollateralForCrowfundedLoan(uint256)
 

@@ -11,12 +11,12 @@ app.use(cors());
 const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
 const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 // Smart Contract: LoanadLendingMarket
-// Address: 0x2072d7D9E54cea8998eA6D5C39CB07766e48B314
+// Address: 0x6C92343713EE9e8449c14f98E30f02Ebe7C91CE7
 // Function Selectors:
 // - 0xd117fc99 -> getVerifiedUser(address)
 // - 0x753008b1 -> assignMaximumAmountForLoan(address)
 // - 0x4d813120 -> verifyUser(address)
-const contract = new ethers.Contract("0x2072d7D9E54cea8998eA6D5C39CB07766e48B314", contractAbiFile.abi, signer);
+const contract = new ethers.Contract("0x6C92343713EE9e8449c14f98E30f02Ebe7C91CE7", contractAbiFile.abi, signer);
 
 /**
  * Endpoint para verificar si un usuario ya está verificado
@@ -66,7 +66,7 @@ app.post("/api/init-loan", async (req, res) => {
     console.log(`\n=== INIT LOAN PROCESS STARTED ===`);
     console.log(`Target user: ${userAddress}`);
     console.log(`Owner calling from: ${signer.address}`);
-    console.log(`Contract address: 0x2072d7D9E54cea8998eA6D5C39CB07766e48B314`);
+    console.log(`Contract address: 0x6C92343713EE9e8449c14f98E30f02Ebe7C91CE7`);
 
     // Call assignMaximumAmountForLoan - this function already:
     // 1. Assigns 10 ETH to the user (hardcoded in contract)

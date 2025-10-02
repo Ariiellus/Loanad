@@ -15,12 +15,20 @@ contract HelperConfig is Script {
     constructor() {
         if (block.chainid == 10143) {
             activeNetworkConfig = getMonadTestnetNetworkConfig();
+        } else if (block.chainid == 84532) {
+            activeNetworkConfig = getBaseSepoliaNetworkConfig();
         } else {
             activeNetworkConfig = getAnvilNetworkConfig();
         }
     }
 
     function getMonadTestnetNetworkConfig() public view returns (NetworkConfig memory) {
+        return NetworkConfig({
+            deployerKey: vm.envUint("PRIVATE_KEY")
+        });
+    }
+
+    function getBaseSepoliaNetworkConfig() public view returns (NetworkConfig memory) {
         return NetworkConfig({
             deployerKey: vm.envUint("PRIVATE_KEY")
         });

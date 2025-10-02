@@ -8,7 +8,7 @@ contract DeployLoanadLendingMarket is Script {
     function run() external {
         vm.startBroadcast();
         
-        LoanadLendingMarket loanadLendingMarket = new LoanadLendingMarket{value: 1 ether}();
+        LoanadLendingMarket loanadLendingMarket = new LoanadLendingMarket();
         console.log("LoanadLendingMarket deployed to: ", address(loanadLendingMarket));
         
         vm.stopBroadcast();
