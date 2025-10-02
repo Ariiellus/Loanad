@@ -1,410 +1,66 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CheckCircle, TrendingUp, ArrowLeft, RefreshCw, AlertCircle } from 'lucide-react';
+import { CheckCircle, TrendingUp, ArrowLeft, RefreshCw, AlertCircle, Loader2 } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import { useWalletConnection } from '@/hooks/useWalletConnection';
+import { useLoanadContract, formatMON } from '@/hooks/useContract';
+import { Address } from 'viem';
 
 interface LoanData {
-  loanId: number;
-  borrower: string;
-  amount: string;
-  collateral: string;
-  isActive: boolean;
-  requestAmount?: string; // Amount requested in the loan request
-  hasLoanRequest: boolean; // WhMONer this loan has an active request
+  loanId: bigint;
+  borrower: Address;
+  collateral: bigint;
 }
-
-interface BorrowerCardProps {
-  loanData: LoanData;
-}
-
-const BorrowerCard = ({ 
-  loanData, 
-  onFundLoan, 
-  onWithdrawFunds, 
-  processingLoanId,
-  inputAmount,
-  onInputChange
-}: BorrowerCardProps & {
-  onFundLoan: (loanData: LoanData) => void;
-  onWithdrawFunds: (loanData: LoanData) => void;
-  processingLoanId: number | null;
-  inputAmount: string;
-  onInputChange: (value: string) => void;
-}) => {
-  const router = useRouter();
-  
-  // Convert wei to MON for display
-  const amountInMON = parseFloat(loanData.amount) / 1e18;
-  const collateralInMON = parseFloat(loanData.collateral) / 1e18;
-  const requestAmountInMON = parseFloat(loanData.requestAmount || '0') / 1e18;
-  
-  // Generate avatar based on address
-  const generateAvatar = (address: string) => {
-    const emojis = ['🚀', '💼', '📚', '🏠', '💰', '🎯', '🌟', '💡'];
-    const index = parseInt(address.slice(2, 4), 16) % emojis.length;
-    return emojis[index];
-  };
-
-  // Calculate funding percentage (simplified - could be enhanced with real funding data)
-  const fundingPercentage = Math.min(100, Math.floor((collateralInMON / amountInMON) * 100));
-
-  return (
-    <Card className="p-4 bg-card shadow-sm rounded-xl border border-border/50 hover:shadow-md transition-all duration-300">
-      <div className="space-y-4">
-        {/* Header row */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-monad-purple/20 to-monad-purple/40 rounded-xl flex items-center justify-center text-xl shrink-0">
-              {generateAvatar(loanData.borrower)}
-            </div>
-            <div className="min-w-0 flex-1">
-              <h3 className="font-montserrat font-bold text-foreground text-lg truncate">
-                {loanData.borrower.slice(0, 6)}...{loanData.borrower.slice(-4)}
-              </h3>
-              <p className="text-sm text-muted-foreground truncate">
-                {amountInMON.toFixed(2)} MON - Loan #{loanData.loanId}
-              </p>
-            </div>
-          </div>
-          <div className="bg-monad-purple text-white rounded-full w-10 h-6 flex items-center justify-center text-xs font-bold shrink-0">
-            ID{loanData.loanId}
-          </div>
-        </div>
-        
-        {/* Loan details row */}
-        <div className="space-y-3">
-          {/* Collateral and Status */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <TrendingUp size={14} className="text-monad-purple shrink-0" />
-              <span className="text-sm font-medium">Collateral: {collateralInMON.toFixed(2)} MON</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1">
-                <CheckCircle size={14} className="text-green-500" />
-                <span className="text-green-600 text-xs font-medium">Verified</span>
-              </div>
-              <div className={`flex items-center gap-1 ${loanData.isActive ? 'text-green-600' : 'text-red-600'}`}>
-                <div className={`w-2 h-2 rounded-full ${loanData.isActive ? 'bg-green-500' : 'bg-red-500'}`} />
-                <span className="text-xs font-medium">{loanData.isActive ? 'Active' : 'Inactive'}</span>
-              </div>
-            </div>
-          </div>
-          
-          {/* Loan Request Information */}
-          {loanData.hasLoanRequest && (
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="text-blue-600 text-xs font-medium">📋 Loan Request</span>
-                </div>
-                <span className="text-blue-600 text-xs font-medium">#{loanData.loanId}</span>
-              </div>
-              <div className="mt-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-blue-700">Requested Amount:</span>
-                  <span className="font-medium text-blue-700">{requestAmountInMON.toFixed(2)} MON</span>
-                </div>
-                <div className="flex justify-between text-sm mt-1">
-                  <span className="text-blue-700">Status:</span>
-                  <span className="font-medium text-green-600">Pending Funding</span>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-        
-        {/* Progress section */}
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground">Collateral Progress</span>
-            <span className="font-medium text-foreground">{fundingPercentage}% collateralized</span>
-          </div>
-          <Progress value={fundingPercentage} className="h-2" />
-        </div>
-        
-        {/* Action buttons and inputs */}
-        <div className="space-y-3">
-          {/* Input for amount */}
-          <div className="space-y-2">
-            <label className="block text-xs font-medium text-muted-foreground">
-              Amount in MON
-            </label>
-            <Input 
-              type="number"
-              placeholder="0.0"
-              step="0.01"
-              min="0"
-              className="h-9 text-sm"
-              value={inputAmount}
-              onChange={(e) => onInputChange(e.target.value)}
-            />
-          </div>
-          
-          {/* Action buttons */}
-          <div className="grid grid-cols-2 gap-2">
-            {/* Fund Loan Button */}
-            <Button 
-              onClick={() => onFundLoan(loanData)}
-              className="bg-green-600 hover:bg-green-700 text-white font-montserrat font-bold py-2 px-3 rounded-lg transition-all duration-300 text-sm"
-              disabled={!loanData.isActive || !inputAmount || parseFloat(inputAmount) <= 0 || processingLoanId === loanData.loanId}
-            >
-              {processingLoanId === loanData.loanId ? (
-                <>
-                  <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <span className="mr-1">💰</span>
-                  Fund
-                </>
-              )}
-            </Button>
-            
-            {/* Withdraw Funds Button */}
-            <Button 
-              onClick={() => onWithdrawFunds(loanData)}
-              className="bg-orange-600 hover:bg-orange-700 text-white font-montserrat font-bold py-2 px-3 rounded-lg transition-all duration-300 text-sm"
-              disabled={!loanData.isActive || !inputAmount || parseFloat(inputAmount) <= 0 || processingLoanId === loanData.loanId}
-            >
-              {processingLoanId === loanData.loanId ? (
-                <>
-                  <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <span className="mr-1">💸</span>
-                  Withdraw
-                </>
-              )}
-            </Button>
-          </div>
-          
-          {/* View Details Button */}
-          <Button 
-            onClick={() => router.push('/borrower-detail')}
-            variant="outline"
-            className="w-full border-monad-purple/30 text-monad-purple hover:bg-monad-purple/10 font-montserrat font-medium py-2 rounded-lg transition-all duration-300 text-sm"
-          >
-            <span className="mr-1">👁️</span>
-            View Details
-          </Button>
-        </div>
-      </div>
-    </Card>
-  );
-};
 
 const BorrowersListPage = () => {
   const router = useRouter();
   const { isConnected } = useWalletConnection();
-  const [loans, setLoans] = useState<LoanData[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [showOnlyRequests, setShowOnlyRequests] = useState(false);
-  const [processingLoanId, setProcessingLoanId] = useState<number | null>(null);
-  const [inputAmounts, setInputAmounts] = useState<{ [key: number]: string }>({});
+  
+  const {
+    useActiveLoanIds,
+    useLoanBorrower,
+    useLoanCollateral,
+    addCollateral,
+    withdrawCollateral,
+    isPending,
+    isConfirming,
+    isConfirmed,
+    hash
+  } = useLoanadContract();
 
-  const fetchLoanData = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
+  // Fetch active loan IDs
+  const { data: activeLoanIds, isLoading, refetch } = useActiveLoanIds();
+  const [inputAmounts, setInputAmounts] = useState<{ [key: string]: string }>({});
+  const [selectedLoanId, setSelectedLoanId] = useState<bigint | null>(null);
 
-      // Fetch total loans count
-      const totalLoansResponse = await fetch('https://loanadback.vercel.app/api/get-total-loans');
-      if (!totalLoansResponse.ok) throw new Error('Error fetching total loans');
-      const totalLoans = await totalLoansResponse.json();
-      
-      if (totalLoans.totalLoans === '0') {
-        setLoans([]);
-        return;
-      }
-
-      // Fetch active loan IDs
-      const activeLoansResponse = await fetch('https://loanadback.vercel.app/api/get-active-loan-ids');
-      if (!activeLoansResponse.ok) throw new Error('Error fetching active loan IDs');
-      const activeLoans = await activeLoansResponse.json();
-      
-      const activeLoanIds = activeLoans.activeLoanIds || [];
-      
-      // Fetch details for each loan
-      const loanDetails: LoanData[] = [];
-      
-      for (const loanId of activeLoanIds) {
-        try {
-          // Fetch borrower for this loan
-          const borrowerResponse = await fetch('https://loanadback.vercel.app/api/get-loan-borrower', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ loanId: parseInt(loanId) })
-          });
-          if (!borrowerResponse.ok) continue;
-          const borrowerData = await borrowerResponse.json();
-          
-          // Fetch collateral for this loan
-          const collateralResponse = await fetch('https://loanadback.vercel.app/api/get-loan-collateral', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ loanId: parseInt(loanId) })
-          });
-          if (!collateralResponse.ok) continue;
-          const collateralData = await collateralResponse.json();
-          
-          // Fetch maximum amount for this borrower
-          const maxAmountResponse = await fetch('https://loanadback.vercel.app/api/get-max-amount', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userAddress: borrowerData.borrower })
-          });
-          if (!maxAmountResponse.ok) continue;
-          const maxAmountData = await maxAmountResponse.json();
-          
-          // Check if this loan has a loan request by calling the contract
-          // We'll need to check if there's a loan request for this loanId
-          let hasLoanRequest = false;
-          let requestAmount = '0';
-          
-          try {
-            // For now, we'll assume all active loans have requests
-            // In a real implementation, you'd check the loan request status
-            hasLoanRequest = true;
-            requestAmount = maxAmountData.maxAmount || '0';
-          } catch (err) {
-            console.error(`Error checking loan request for loan ${loanId}:`, err);
-            hasLoanRequest = false;
-          }
-          
-          loanDetails.push({
-            loanId: parseInt(loanId),
-            borrower: borrowerData.borrower,
-            amount: maxAmountData.maxAmount || '0',
-            collateral: collateralData.collateral || '0',
-            isActive: true,
-            hasLoanRequest,
-            requestAmount
-          });
-        } catch (err) {
-          console.error(`Error fetching details for loan ${loanId}:`, err);
-          continue;
-        }
-      }
-      
-      setLoans(loanDetails);
-    } catch (err) {
-      console.error('Error fetching loan data:', err);
-      setError(err instanceof Error ? err.message : 'Unknown error loading loans');
-    } finally {
-      setIsLoading(false);
-    }
+  const handleRefresh = () => {
+    refetch();
   };
 
-  const handleRefresh = async () => {
-    setIsRefreshing(true);
-    await fetchLoanData();
-    setIsRefreshing(false);
-  };
-
-  const handleFundLoan = async (loanData: LoanData) => {
-    const inputAmount = inputAmounts[loanData.loanId];
-    if (!inputAmount || parseFloat(inputAmount) <= 0) {
+  const handleFundLoan = (loanId: bigint) => {
+    const amount = inputAmounts[loanId.toString()];
+    if (!amount || parseFloat(amount) <= 0) {
       alert('Please enter a valid amount');
       return;
     }
-
-    setProcessingLoanId(loanData.loanId);
-
-    try {
-      // The input amount is now a direct MON amount (no multiplier)
-      // Example: input "1" = 1 * 1e18 = 1 MON in wei
-      const amountInWei = (parseFloat(inputAmount) * 1e18).toString();
-      console.log(`Funding loan ${loanData.loanId} with amount: ${amountInWei} wei (${inputAmount} MON)`);
-      
-      // Call the smart contract function addCollateralForCrowfundedLoan(uint256)
-      // Function selector: 0x5886cb68
-      // This function expects the loanId and msg.value will be the amount
-      const response = await fetch('https://loanadback.vercel.app/api/add-collateral', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          loanId: loanData.loanId,
-          amount: amountInWei // This will be the msg.value
-        })
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        alert(`Loan funded successfully! Hash: ${result.txHash}`);
-        // Refresh data after successful funding
-        await fetchLoanData();
-      } else {
-        const error = await response.json();
-        alert(`Error funding loan: ${error.error}`);
-      }
-    } catch (error) {
-      console.error('Error funding loan:', error);
-      alert(`Error funding loan: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    } finally {
-      setProcessingLoanId(null);
-    }
+    setSelectedLoanId(loanId);
+    addCollateral(loanId, amount);
   };
 
-  const handleWithdrawFunds = async (loanData: LoanData) => {
-    const inputAmount = inputAmounts[loanData.loanId];
-    if (!inputAmount || parseFloat(inputAmount) <= 0) {
+  const handleWithdrawFunds = (loanId: bigint) => {
+    const amount = inputAmounts[loanId.toString()];
+    if (!amount || parseFloat(amount) <= 0) {
       alert('Please enter a valid amount');
       return;
     }
-
-    setProcessingLoanId(loanData.loanId);
-
-    try {
-      // For withdraw, the input amount is directly in MON, convert to wei
-      const amountInWei = (parseFloat(inputAmount) * 1e18).toString();
-      console.log(`Withdrawing from loan ${loanData.loanId} with amount: ${amountInWei} wei (${inputAmount} MON)`);
-      
-      // Call the smart contract function withdrawForCrowfundedLoan(uint256,uint256)
-      // Function selector: 0x1e7b5766
-      // First argument: amount, Second argument: loanId
-      const response = await fetch('https://loanadback.vercel.app/api/withdraw-collateral', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          amount: amountInWei, // First argument: amount
-          loanId: loanData.loanId // Second argument: loanId
-        })
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        alert(`Funds withdrawn successfully! Hash: ${result.txHash}`);
-        // Refresh data after successful withdrawal
-        await fetchLoanData();
-      } else {
-        const error = await response.json();
-        alert(`Error withdrawing funds: ${error.error}`);
-      }
-    } catch (error) {
-      console.error('Error withdrawing funds:', error);
-      alert(`Error withdrawing funds: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    } finally {
-      setProcessingLoanId(null);
-    }
+    setSelectedLoanId(loanId);
+    withdrawCollateral(amount, loanId);
   };
-
-  useEffect(() => {
-    if (isConnected) {
-      fetchLoanData();
-    }
-  }, [isConnected]);
 
   // Show loading state
   if (isLoading) {
@@ -414,7 +70,7 @@ const BorrowersListPage = () => {
           <div className="flex items-center mb-6">
             <button 
               onClick={() => router.push('/pages/dashboard')}
-              className="p-2 hover:bg-muted rounded-lg transition-colors mr-3 shrink-0"
+              className="p-2 hover:bg-muted rounded-lg transition-colors mr-3 shrink-0 cursor-pointer"
             >
               <ArrowLeft size={24} className="text-foreground" />
             </button>
@@ -436,50 +92,15 @@ const BorrowersListPage = () => {
     );
   }
 
-  // Show error state
-  if (error) {
-    return (
-      <div className="min-h-screen bg-background px-4 pt-6 pb-24">
-        <div className="max-w-md mx-auto">
-          <div className="flex items-center mb-6">
-            <button 
-              onClick={() => router.push('/pages/dashboard')}
-              className="p-2 hover:bg-muted rounded-lg transition-colors mr-3 shrink-0"
-            >
-              <ArrowLeft size={24} className="text-foreground" />
-            </button>
-            <div className="min-w-0 flex-1">
-              <h2 className="text-xl font-montserrat font-bold text-foreground mb-1 truncate">
-                Borrowers List
-              </h2>
-              <h3 className="text-sm text-muted-foreground">
-                Error loading data
-              </h3>
-            </div>
-          </div>
-          
-          <Card className="p-6 text-center">
-            <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-foreground mb-2">Error loading loans</h3>
-            <p className="text-muted-foreground mb-4">{error}</p>
-            <Button onClick={handleRefresh} className="bg-monad-purple hover:bg-monad-purple/90">
-              Retry
-            </Button>
-          </Card>
-        </div>
-      </div>
-    );
-  }
-
   // Show no loans state
-  if (loans.length === 0 || (showOnlyRequests && loans.filter(loan => loan.hasLoanRequest).length === 0)) {
+  if (!activeLoanIds || activeLoanIds.length === 0) {
     return (
       <div className="min-h-screen bg-background px-4 pt-6 pb-24">
         <div className="max-w-md mx-auto">
           <div className="flex items-center mb-6">
             <button 
               onClick={() => router.push('/pages/dashboard')}
-              className="p-2 hover:bg-muted rounded-lg transition-colors mr-3 shrink-0"
+              className="p-2 hover:bg-muted rounded-lg transition-colors mr-3 shrink-0 cursor-pointer"
             >
               <ArrowLeft size={24} className="text-foreground" />
             </button>
@@ -499,9 +120,9 @@ const BorrowersListPage = () => {
             <p className="text-muted-foreground mb-4">
               Currently there are no active loan requests in the system.
             </p>
-            <Button onClick={handleRefresh} className="bg-monad-purple hover:bg-monad-purple/90">
-              <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-              Update
+            <Button onClick={handleRefresh} className="bg-monad-purple hover:bg-monad-purple/90 cursor-pointer">
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Refresh
             </Button>
           </Card>
         </div>
@@ -517,7 +138,7 @@ const BorrowersListPage = () => {
           <div className="flex items-center mb-4">
             <button 
               onClick={() => router.push('/pages/dashboard')}
-              className="p-2 hover:bg-muted rounded-lg transition-colors mr-3 shrink-0"
+              className="p-2 hover:bg-muted rounded-lg transition-colors mr-3 shrink-0 cursor-pointer"
             >
               <ArrowLeft size={24} className="text-foreground" />
             </button>
@@ -526,122 +147,181 @@ const BorrowersListPage = () => {
                 Borrowers List
               </h2>
               <h3 className="text-sm text-muted-foreground">
-                {loans.length} active loan{loans.length !== 1 ? 's' : ''}
-                {loans.filter(loan => loan.hasLoanRequest).length > 0 && (
-                  <span className="ml-2 text-blue-600 font-medium">
-                    • {loans.filter(loan => loan.hasLoanRequest).length} pending request{loans.filter(loan => loan.hasLoanRequest).length !== 1 ? 's' : ''}
-                  </span>
-                )}
+                {activeLoanIds.length} active loan{activeLoanIds.length !== 1 ? 's' : ''}
               </h3>
             </div>
-            <div className="flex gap-2">
-
-
-              <Button
-                onClick={handleRefresh}
-                variant="outline"
-                size="sm"
-                className="shrink-0"
-                disabled={isRefreshing}
-              >
-                <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-                Update
-              </Button>
-            </div>
+            <Button
+              onClick={handleRefresh}
+              variant="outline"
+              size="sm"
+              className="shrink-0 cursor-pointer"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Update
+            </Button>
           </div>
         </div>
-        
-        {/* Active Loans Summary Table */}
-        {loans.length > 0 && (
-          <Card className="p-4 mb-6">
-            <h4 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-              📊 Active Loans Summary
-              <span className="text-sm text-muted-foreground font-normal">
-                ({loans.length} total)
-              </span>
-            </h4>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border/50">
-                    <th className="text-left py-2 font-medium text-muted-foreground">ID</th>
-                    <th className="text-left py-2 font-medium text-muted-foreground">Borrower</th>
-                    <th className="text-left py-2 font-medium text-muted-foreground">Max Amount</th>
-                    <th className="text-left py-2 font-medium text-muted-foreground">Collateral</th>
-                    <th className="text-left py-2 font-medium text-muted-foreground">Request</th>
-                    <th className="text-left py-2 font-medium text-muted-foreground">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loans.map((loan) => (
-                    <tr key={loan.loanId} className="border-b border-border/20 hover:bg-muted/30">
-                      <td className="py-2">
-                        <span className="font-mono font-bold text-monad-purple">#{loan.loanId}</span>
-                      </td>
-                      <td className="py-2">
-                        <span className="font-mono text-xs">
-                          {loan.borrower.slice(0, 6)}...{loan.borrower.slice(-4)}
-                        </span>
-                      </td>
-                      <td className="py-2">
-                        <span className="font-medium">
-                          {(parseFloat(loan.amount) / 1e18).toFixed(2)} MON
-                        </span>
-                      </td>
-                      <td className="py-2">
-                        <span className="font-medium">
-                          {(parseFloat(loan.collateral) / 1e18).toFixed(2)} MON
-                        </span>
-                      </td>
-                      <td className="py-2">
-                        {loan.hasLoanRequest ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">
-                            <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                              Pending
-                          </span>
-                        ) : (
-                          <span className="text-muted-foreground text-xs">-</span>
-                        )}
-                      </td>
-                      <td className="py-2">
-                        <span className={`inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full ${
-                          loan.isActive 
-                            ? 'bg-green-100 text-green-700' 
-                            : 'bg-red-100 text-red-700'
-                        }`}>
-                          <span className={`w-2 h-2 rounded-full ${
-                            loan.isActive ? 'bg-green-500' : 'bg-red-500'
-                          }`}></span>
-                          {loan.isActive ? 'Active' : 'Inactive'}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+
+        {/* Success Message */}
+        {isConfirmed && hash && (
+          <Card className="p-4 mb-4 bg-green-50 border-green-200">
+            <p className="text-green-800 text-sm">
+              ✅ Transaction confirmed! Hash: {hash.slice(0, 10)}...
+            </p>
           </Card>
         )}
-
+        
         {/* Loans list */}
         <div className="space-y-4">
-          {loans
-            .filter(loan => !showOnlyRequests || loan.hasLoanRequest)
-            .map((loan) => (
-              <BorrowerCard 
-                key={loan.loanId} 
-                loanData={loan}
-                onFundLoan={handleFundLoan}
-                onWithdrawFunds={handleWithdrawFunds}
-                processingLoanId={processingLoanId}
-                inputAmount={inputAmounts[loan.loanId] || ''}
-                onInputChange={(value) => setInputAmounts(prev => ({ ...prev, [loan.loanId]: value }))}
-              />
-            ))}
+          {activeLoanIds.map((loanId: bigint) => (
+            <LoanCard 
+              key={loanId.toString()}
+              loanId={loanId}
+              inputAmount={inputAmounts[loanId.toString()] || ''}
+              onInputChange={(value) => setInputAmounts(prev => ({ ...prev, [loanId.toString()]: value }))}
+              onFund={() => handleFundLoan(loanId)}
+              onWithdraw={() => handleWithdrawFunds(loanId)}
+              isPending={isPending && selectedLoanId === loanId}
+              isConfirming={isConfirming && selectedLoanId === loanId}
+            />
+          ))}
         </div>
       </div>
     </div>
   );
 };
 
+// Separate component for each loan card
+const LoanCard = ({ 
+  loanId, 
+  inputAmount, 
+  onInputChange, 
+  onFund, 
+  onWithdraw,
+  isPending,
+  isConfirming
+}: { 
+  loanId: bigint;
+  inputAmount: string;
+  onInputChange: (value: string) => void;
+  onFund: () => void;
+  onWithdraw: () => void;
+  isPending: boolean;
+  isConfirming: boolean;
+}) => {
+  const { useLoanBorrower, useLoanCollateral } = useLoanadContract();
+  const { data: borrower } = useLoanBorrower(loanId);
+  const { data: collateral } = useLoanCollateral(loanId);
+
+  if (!borrower) return null;
+
+  const collateralAmount = collateral ? formatMON(collateral) : '0';
+  const fundingPercentage = collateral ? Math.min(100, parseFloat(collateralAmount) * 10) : 0;
+
+  // Generate avatar based on address
+  const generateAvatar = (address: string) => {
+    const emojis = ['🚀', '💼', '📚', '🏠', '💰', '🎯', '🌟', '💡'];
+    const index = parseInt(address.slice(2, 4), 16) % emojis.length;
+    return emojis[index];
+  };
+
+  return (
+    <Card className="p-4 bg-card shadow-sm rounded-xl border border-border/50 hover:shadow-md transition-all duration-300">
+      <div className="space-y-4">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-monad-purple/20 to-monad-purple/40 rounded-xl flex items-center justify-center text-xl shrink-0">
+              {generateAvatar(borrower)}
+            </div>
+            <div className="min-w-0 flex-1">
+              <h3 className="font-montserrat font-bold text-foreground text-lg truncate">
+                {borrower.slice(0, 6)}...{borrower.slice(-4)}
+              </h3>
+              <p className="text-sm text-muted-foreground truncate">
+                Loan #{loanId.toString()}
+              </p>
+            </div>
+          </div>
+          <div className="bg-monad-purple text-white rounded-full px-3 py-1 text-xs font-bold shrink-0">
+            ID{loanId.toString()}
+          </div>
+        </div>
+        
+        {/* Details */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <TrendingUp size={14} className="text-monad-purple shrink-0" />
+            <span className="text-sm font-medium">Collateral: {collateralAmount} MON</span>
+          </div>
+          <div className="flex items-center gap-1 text-green-600">
+            <CheckCircle size={14} />
+            <span className="text-xs font-medium">Verified</span>
+          </div>
+        </div>
+        
+        {/* Progress */}
+        <div className="space-y-2">
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Collateral Progress</span>
+            <span className="font-medium text-foreground">{fundingPercentage.toFixed(0)}%</span>
+          </div>
+          <Progress value={fundingPercentage} className="h-2" />
+        </div>
+        
+        {/* Input */}
+        <div className="space-y-2">
+          <label className="block text-xs font-medium text-muted-foreground">
+            Amount in MON
+          </label>
+          <Input 
+            type="number"
+            placeholder="0.0"
+            step="0.01"
+            min="0"
+            className="h-9 text-sm"
+            value={inputAmount}
+            onChange={(e) => onInputChange(e.target.value)}
+            disabled={isPending || isConfirming}
+          />
+        </div>
+        
+        {/* Buttons */}
+        <div className="grid grid-cols-2 gap-2">
+          <Button 
+            onClick={onFund}
+            className="bg-green-600 hover:bg-green-700 text-white font-montserrat font-bold cursor-pointer"
+            disabled={!inputAmount || parseFloat(inputAmount) <= 0 || isPending || isConfirming}
+          >
+            {isPending || isConfirming ? (
+              <>
+                <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                {isPending ? 'Approve...' : 'Confirming...'}
+              </>
+            ) : (
+              <>💰 Fund</>
+            )}
+          </Button>
+          
+          <Button 
+            onClick={onWithdraw}
+            className="bg-orange-600 hover:bg-orange-700 text-white font-montserrat font-bold cursor-pointer"
+            disabled={!inputAmount || parseFloat(inputAmount) <= 0 || isPending || isConfirming}
+          >
+            {isPending || isConfirming ? (
+              <>
+                <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                Processing...
+              </>
+            ) : (
+              <>💸 Withdraw</>
+            )}
+          </Button>
+        </div>
+      </div>
+    </Card>
+  );
+};
+
 export default BorrowersListPage;
+

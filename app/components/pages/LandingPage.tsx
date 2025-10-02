@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { WalletConnection } from '@/components/WalletConnection';
 import { useWalletConnection } from '@/hooks/useWalletConnection';
 import { useEffect } from 'react';
+import { useLoanadContract } from '@/hooks/useContract';
+import { Address } from 'viem';
 
 const LandingPageContent = () => {
   const router = useRouter();
@@ -17,6 +19,9 @@ const LandingPageContent = () => {
     refreshConnection 
   } = useWalletConnection();
 
+  const { useIsVerified } = useLoanadContract();
+  const { data: isVerified, isLoading: checkingVerification } = useIsVerified(address as Address);
+
   // Log connection changes
   useEffect(() => {
     console.log('Wallet connection state changed:', { 
@@ -27,47 +32,19 @@ const LandingPageContent = () => {
     });
   }, [isConnected, address, connectionType, provider]);
 
-  const handleContinue = async () => {
+  const handleContinue = () => {
     if (!isConnected || !address) {
       console.error('No wallet connected');
       return;
     }
 
-    try {
-      console.log('LandingPage - Checking verification status for:', address);
-      
-      // Call backend API to check if user is already verified on-chain
-      const response = await fetch('https://loanadback.vercel.app/api/check-verification', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userAddress: address
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const result = await response.json();
-      console.log('LandingPage - Verification check result:', result);
-
-      if (result.isVerified) {
-        console.log('LandingPage - User already verified on-chain, going to dashboard');
-        // User is already verified on-chain, go directly to dashboard
-        router.push('/pages/dashboard');
-        return;
-      } else {
-        console.log('LandingPage - User not verified on-chain, going to verification page');
-        // User is not verified, go to verification page
-        router.push('/pages/verification');
-      }
-    } catch (error) {
-      console.error('LandingPage - Error checking verification:', error);
-      // On error, show user-friendly message and fallback to verification page
-      alert('Unable to connect to the server. Please try again or proceed to verification.');
+    console.log('LandingPage - Verification status:', isVerified);
+    
+    if (isVerified) {
+      console.log('LandingPage - User verified, going to dashboard');
+      router.push('/pages/dashboard');
+    } else {
+      console.log('LandingPage - User not verified, going to verification page');
       router.push('/pages/verification');
     }
   };
@@ -106,9 +83,12 @@ const LandingPageContent = () => {
                 
                 <Button 
                   onClick={handleContinue}
-                  className="w-full bg-monad-purple hover:bg-monad-purple/90 text-white font-montserrat font-bold py-6 rounded-xl text-lg transition-all duration-300"
+                  disabled={checkingVerification}
+                  className={`w-full bg-monad-purple hover:bg-monad-purple/90 text-white font-montserrat font-bold py-6 rounded-xl text-lg transition-all duration-300 ${
+                    checkingVerification ? 'cursor-not-allowed' : 'cursor-pointer'
+                  }`}
                 >
-                  Continue
+                  {checkingVerification ? 'Checking...' : 'Continue'}
                   <ArrowRight className="ml-2" size={20} />
                 </Button>
               </>

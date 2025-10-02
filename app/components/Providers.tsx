@@ -30,33 +30,39 @@ const config = createConfig({
 const queryClient = new QueryClient();
 
 export function Providers({ children }: { children: ReactNode }) {
+  const apiKey = process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY;
+
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <OnchainKitProvider
-          apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY}
-          chain={baseSepolia}
-          config={{
-            appearance: {
-              name: "Loanad",
-              logo: "/loanad-logo.png",
-              mode: "auto",
-              theme: "default",
-            },
-            wallet: {
-              display: "modal",
-              termsUrl: "https://loanad.app/terms",
-              privacyUrl: "https://loanad.app/privacy",
-              supportedWallets: {
-                rabby: true,
-                trust: true,
-                frame: true,
+        {apiKey ? (
+          <OnchainKitProvider
+            apiKey={apiKey}
+            chain={baseSepolia}
+            config={{
+              appearance: {
+                name: "Loanad",
+                logo: "/loanad-logo.png",
+                mode: "auto",
+                theme: "default",
               },
-            },
-          }}
-        >
-          {children}
-        </OnchainKitProvider>
+              wallet: {
+                display: "modal",
+                termsUrl: "https://loanad.app/terms",
+                privacyUrl: "https://loanad.app/privacy",
+                supportedWallets: {
+                  rabby: true,
+                  trust: true,
+                  frame: true,
+                },
+              },
+            }}
+          >
+            {children}
+          </OnchainKitProvider>
+        ) : (
+          children
+        )}
       </QueryClientProvider>
     </WagmiProvider>
   );

@@ -45,7 +45,7 @@ const InvestmentApprovedPage = () => {
           {investmentAmount && (
             <Card className="p-4 bg-muted/30 rounded-xl">
               <p className="text-muted-foreground">
-                You invested <span className="font-bold text-foreground">${investmentAmount}</span> in {borrower?.name || 'the loan'}
+                You invested <span className="font-bold text-foreground">${investmentAmount}</span> in the loan
               </p>
             </Card>
           )}

@@ -5,17 +5,26 @@ import { useRouter } from 'next/navigation';
 import { Paperclip, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Providers } from '@/components/Providers';
 import { useWalletConnection } from '@/hooks/useWalletConnection';
 import { WalletConnection } from '@/components/WalletConnection';
+import { useLoanadContract } from '@/hooks/useContract';
+import { Address } from 'viem';
 
 const AllFormPageContent = () => {
   const router = useRouter();
-  const { isConnected, address, connectionType, provider } = useWalletConnection();
+  const { isConnected, address } = useWalletConnection();
+  const { 
+    useIsVerified, 
+    assignMaxLoan, 
+    isPending, 
+    isConfirming, 
+    isConfirmed,
+    error 
+  } = useLoanadContract();
+  const { data: isVerified, refetch } = useIsVerified(address as Address);
   const [documentUploaded, setDocumentUploaded] = useState(false);
   const [kycCompleted, setKycCompleted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // Check if verification has already been completed
@@ -81,104 +90,82 @@ const AllFormPageContent = () => {
     }));
   };
 
-  const handleContinue = async () => {
-    if (isSubmitting) return; // Prevent double submission
-    
-    setIsSubmitting(true);
-    setMessage(null); // Clear previous messages
-    
-    try {
-      if (!isConnected || !address) {
-        console.error('No wallet connected');
-        setMessage({ type: 'error', text: 'No wallet connected' });
-        return;
-      }
-
-      const userAddress = address;
-      console.log('AllFormPage - Starting verification for user:', userAddress);
-
-      // Step 1: Call backend to check if user is already verified
-      console.log('AllFormPage - Checking if user is already verified...');
-      setMessage({ type: 'success', text: 'Checking user status...' });
-      
-      const checkResponse = await fetch('https://loanadback.vercel.app/api/check-verification', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userAddress })
-      });
-
-      if (checkResponse.ok) {
-        const checkResult = await checkResponse.json();
-        console.log('AllFormPage - Verification check result:', checkResult);
-        
-        if (checkResult.isVerified) {
-          // User is already verified, just go to dashboard
-          setMessage({ 
-            type: 'success', 
-            text: 'User already verified! Redirecting to dashboard...' 
-          });
-          
-          setTimeout(() => {
-            router.push('/pages/dashboard');
-          }, 2000);
-          return;
-        }
-      }
-
-      // Step 2: User is not verified, call backend to assign 10 MON and verify
-      console.log('AllFormPage - User not verified, calling backend to assign 10 MON and verify...');
+  // Watch for successful transaction
+  useEffect(() => {
+    if (isConfirmed) {
       setMessage({ 
         type: 'success', 
-        text: 'Processing... The owner is assigning 10 MON to your account...' 
+        text: 'Verification completed! You have been assigned 10 MON. Redirecting...'
       });
       
-      const initResponse = await fetch('https://loanadback.vercel.app/api/init-loan', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userAddress })
-      });
+      // Refetch verification status
+      refetch();
+      
+      // Save to localStorage
+      localStorage.setItem('loanad-verification', JSON.stringify({
+        documentUploaded: true,
+        kycCompleted: true,
+        verifiedAt: new Date().toISOString()
+      }));
+      
+      setTimeout(() => {
+        router.push('/pages/dashboard');
+      }, 2000);
+    }
+  }, [isConfirmed, refetch, router]);
 
-      if (!initResponse.ok) {
-        throw new Error(`HTTP error! status: ${initResponse.status}`);
-      }
-
-      const initResult = await initResponse.json();
-      console.log('AllFormPage - Backend verification and assignment result:', initResult);
-
-      if (initResult.success) {
-        setMessage({ 
-          type: 'success', 
-          text: `Verification completed successfully! 
-          Hash: ${initResult.txHash ? initResult.txHash.slice(0, 6) + '...' + initResult.txHash.slice(-4) : 'N/A'}
-          10 MON assigned to your account and your status is verified automatically. `
-          
-        });
-
-        // Save verification status to localStorage
-        localStorage.setItem('loanad-verification', JSON.stringify({
-          documentUploaded: true,
-          kycCompleted: true,
-          verifiedAt: new Date().toISOString(),
-          txHash: initResult.txHash,
-          assignedAmount: '10000000000000000000' // 10 MON in wei
-        }));
-
-        // Navigate to dashboard after a delay
-        setTimeout(() => {
-          router.push('/dashboard');
-        }, 3000);
-      } else {
-        throw new Error(initResult.error || 'Error in verification and assignment');
-      }
-
-    } catch (error) {
-      console.error('AllFormPage - Error during verification process:', error);
+  // Watch for errors
+  useEffect(() => {
+    if (error) {
       setMessage({ 
         type: 'error', 
-        text: `Error during verification: ${error instanceof Error ? error.message : 'Unknown error'}` 
+        text: `Please try again.`
       });
-    } finally {
-      setIsSubmitting(false);
+    }
+  }, [error]);
+
+  const handleContinue = () => {
+    console.log('AllFormPage - handleContinue called');
+    console.log('AllFormPage - isConnected:', isConnected);
+    console.log('AllFormPage - address:', address);
+    console.log('AllFormPage - isVerified:', isVerified);
+    
+    if (!isConnected || !address) {
+      console.error('No wallet connected');
+      setMessage({ type: 'error', text: 'No wallet connected' });
+      return;
+    }
+
+    // Check if user is verified on-chain
+    if (isVerified) {
+      // Already verified, just proceed
+      console.log('AllFormPage - User already verified, redirecting...');
+      setMessage({ 
+        type: 'success', 
+        text: 'Already verified! Redirecting to dashboard...'
+      });
+      
+      localStorage.setItem('loanad-verification', JSON.stringify({
+        documentUploaded: true,
+        kycCompleted: true,
+        verifiedAt: new Date().toISOString()
+      }));
+      
+      setTimeout(() => {
+        router.push('/pages/dashboard');
+      }, 1500);
+    } else {
+      // Not verified - call assignMaximumAmountForLoan
+      console.log('AllFormPage - User NOT verified, calling assignMaxLoan...');
+      console.log('AllFormPage - Calling assignMaxLoan with address:', address);
+      
+      setMessage({ 
+        type: 'success', 
+        text: 'Calling verification contract... Please confirm in your wallet.'
+      });
+      
+      assignMaxLoan(address as Address);
+      console.log('AllFormPage - assignMaxLoan called!');
     }
   };
 
@@ -209,7 +196,9 @@ const AllFormPageContent = () => {
           </div>
           
           {/* Wallet Connection Status */}
-          <WalletConnection />
+          <div className="flex justify-center">
+            <WalletConnection />
+          </div>
           
           {message && (
             <div className={`p-4 rounded-lg text-sm font-medium ${
@@ -224,7 +213,7 @@ const AllFormPageContent = () => {
           <div className="space-y-4">
             <Button 
               onClick={handleDocumentUpload}
-              className={`w-full rounded-lg py-6 transition-all duration-300 font-montserrat font-bold ${
+              className={`w-full rounded-lg py-6 transition-all duration-300 font-montserrat font-bold cursor-pointer ${
                 documentUploaded 
                   ? 'bg-green-500 hover:bg-green-600 text-white border-green-500' 
                   : 'bg-muted hover:bg-muted/80 text-foreground border border-border'
@@ -236,7 +225,7 @@ const AllFormPageContent = () => {
 
             <Button 
               onClick={handleKycComplete}
-              className={`w-full rounded-lg py-6 transition-all duration-300 font-montserrat font-bold ${
+              className={`w-full rounded-lg py-6 transition-all duration-300 font-montserrat font-bold cursor-pointer ${
                 kycCompleted 
                   ? 'bg-green-500 hover:bg-green-600 text-white border-green-500' 
                   : 'bg-muted hover:bg-muted/80 text-foreground border border-border'
@@ -248,20 +237,27 @@ const AllFormPageContent = () => {
 
             <Button 
               onClick={handleContinue}
-              disabled={!documentUploaded || !kycCompleted || isSubmitting}
+              disabled={!documentUploaded || !kycCompleted || isPending || isConfirming}
               className={`w-full font-montserrat font-bold py-6 rounded-xl text-lg transition-all duration-300 mt-6 ${
-                documentUploaded && kycCompleted && !isSubmitting
+                documentUploaded && kycCompleted && !isPending && !isConfirming
                   ? 'bg-monad-purple hover:bg-monad-purple/90 text-white cursor-pointer'
                   : 'bg-gray-400 text-gray-200 cursor-not-allowed'
               }`}
             >
-              {isSubmitting ? (
+              {isPending ? (
                 <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Processing...
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white inline-block mr-2"></div>
+                  Waiting for approval...
                 </>
+              ) : isConfirming ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white inline-block mr-2"></div>
+                  Confirming transaction...
+                </>
+              ) : isVerified ? (
+                'Continue to Dashboard'
               ) : (
-                'Complete Verification'
+                'Verify'
               )}
             </Button>
           </div>

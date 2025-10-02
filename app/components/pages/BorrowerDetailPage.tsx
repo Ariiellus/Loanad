@@ -12,8 +12,8 @@ const BorrowerDetailPage = () => {
   const searchParams = useSearchParams();
   const borrower = null; // No state in Next.js
   const [investmentAmount, setInvestmentAmount] = useState('');
-
-  // Data por defecto si no viene del state
+  
+  // Default data if not coming from the state
   const defaultBorrower = {
     id: 1,
     name: 'Molandaki.nad',
@@ -46,7 +46,7 @@ const BorrowerDetailPage = () => {
     <div className="min-h-screen bg-background px-4 py-8 pb-32">
       <div className="max-w-md mx-auto space-y-6">
         <Card className="p-6 bg-card rounded-xl shadow-lg border border-border/50">
-          {/* Botón X en el lado derecho */}
+          {/* Button X on the right */}
           <div className="flex justify-end mb-4">
             <button 
               onClick={() => router.push('/pages/borrowers-list')}
@@ -55,7 +55,7 @@ const BorrowerDetailPage = () => {
               <X size={24} />
             </button>
           </div>
-          {/* Header with avatar and basic data */}
+          {/* Header with avatar and basic data and age */}
           <div className="text-center space-y-4 mb-6">
             <div className="w-24 h-24 bg-gradient-to-br from-monad-purple/30 to-monad-purple/60 rounded-2xl flex items-center justify-center text-4xl mx-auto">
               {data.avatar}
@@ -70,7 +70,7 @@ const BorrowerDetailPage = () => {
             </div>
           </div>
 
-          {/* Loan Information */}
+          {/* Loan Information and amount and interest rate */}
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-muted/30 p-3 rounded-lg text-center">
